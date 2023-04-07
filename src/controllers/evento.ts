@@ -808,7 +808,7 @@ export const EventoController: any = {
             throw new Error("No se encontró el evento.");
           }
           break;
-        case "actividad":
+        case "activity":
           obj = await EventoController.DoGetActivityByAnything({
             _id: req.params.id,
           });
@@ -817,7 +817,7 @@ export const EventoController: any = {
           }
           break;
         default:
-          throw new Error("No elegiste ningún tipo de calificación.");
+          throw new Error("No elegiste ningún tipo de objeto.");
           break;
       }
       if (
@@ -860,14 +860,14 @@ export const EventoController: any = {
             throw new Error("No se encontró el evento.");
           }
           break;
-        case "actividad":
+        case "activity":
           obj = await EventoController.DoUpdateActivity(obj);
           if (!obj) {
             throw new Error("No se encontró el evento.");
           }
           break;
         default:
-          throw new Error("No elegiste ningún tipo de calificación.");
+          throw new Error("No elegiste ningún tipo de objeto.");
           break;
       }
       obj = await _utility.deletePasswordFields(obj);

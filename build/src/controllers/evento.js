@@ -793,7 +793,7 @@ exports.EventoController = {
                             throw new Error("No se encontró el evento.");
                         }
                         break;
-                    case "actividad":
+                    case "activity":
                         obj = yield exports.EventoController.DoGetActivityByAnything({
                             _id: req.params.id,
                         });
@@ -802,7 +802,7 @@ exports.EventoController = {
                         }
                         break;
                     default:
-                        throw new Error("No elegiste ningún tipo de calificación.");
+                        throw new Error("No elegiste ningún tipo de objeto.");
                         break;
                 }
                 if (!req.params.type ||
@@ -841,14 +841,14 @@ exports.EventoController = {
                             throw new Error("No se encontró el evento.");
                         }
                         break;
-                    case "actividad":
+                    case "activity":
                         obj = yield exports.EventoController.DoUpdateActivity(obj);
                         if (!obj) {
                             throw new Error("No se encontró el evento.");
                         }
                         break;
                     default:
-                        throw new Error("No elegiste ningún tipo de calificación.");
+                        throw new Error("No elegiste ningún tipo de objeto.");
                         break;
                 }
                 obj = yield utility_1.default.deletePasswordFields(obj);
