@@ -1,10 +1,14 @@
 /* Modules */
-import { Request, Response } from "express";
+import { NextFunction, Response } from "express";
 import jwt from "jwt-simple";
 import moment from "moment";
-import secret from "../keys";
-
-export const ensureAuth = (req: any, res: Response, next: any) => {
+import { IRequestWithPayload } from "../interfaces/requestWithPayload";
+const secret = process.env.SECRET ? process.env.SECRET : "";
+export function ensureAuth(
+  req: IRequestWithPayload,
+  res: Response,
+  next: NextFunction
+): Response | void {
   if (!req.headers.authorization) {
     return res
       .status(403)
@@ -19,15 +23,18 @@ export const ensureAuth = (req: any, res: Response, next: any) => {
       });
     }
     req.user = payload;
-  } catch (ex) {
+  } catch (e) {
     return res.status(404).send({
       message: "El token no es válido",
     });
   }
   next();
-};
-
-export const optionalAuth = (req: any, res: Response, next: any) => {
+}
+export function optionalAuth(
+  req: IRequestWithPayload,
+  res: Response,
+  next: NextFunction
+): Response | void {
   if (req && req.headers && req.headers.authorization) {
     const token = req.headers.authorization.replace(/['"]+/g, "");
     try {
@@ -38,7 +45,7 @@ export const optionalAuth = (req: any, res: Response, next: any) => {
         });
       }
       req.user = payload;
-    } catch (ex) {
+    } catch (e) {
       return res.status(404).send({
         message: "El token no es válido",
       });
@@ -47,4 +54,4 @@ export const optionalAuth = (req: any, res: Response, next: any) => {
   } else {
     next();
   }
-};
+}

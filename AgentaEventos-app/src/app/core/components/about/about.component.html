@@ -1,0 +1,109 @@
+<!-- Header -->
+<header
+  class="d-flex mx-auto flex-wrap justify-content-between align-items-center bef bef-w-calcSD100per__MIN__2remED"
+>
+  <generic-button
+    [type]="'return'"
+    [classButton]="
+      'd-block mat-elevation-z3 bef bef-btnOutline-btnBG bef-bc-btnBG bef-bW-btnBG bef-bS-solid bef-text-mainText bef-textHover-mainBG bef-cursor-pointer bef-r-100per bef-fs-2rem bef-h-2_5rem bef-w-2_5rem p-0'
+    "
+    [customHtml]="getHTML('back')"
+    [disabledClassButton]="
+      'd-block bef bef-btnOutline-btnBG__OPA__0_66 bef-bc-btnBG bef-bW-btnBG bef-bS-solid bef-text-mainText bef-textHover-mainBG bef-cursor-pointer bef-r-100per bef-fs-2rem bef-h-2_5rem bef-w-2_5rem p-0'
+    "
+    [tooltip]="'Regresar'"
+    [tooltipPosition]="'left'"
+    [showTooltip]="true"
+    [tooltipClass]="'bef bef-r-1rem bef-text-mainBG bef-bg-btnBG bef-p-1rem'"
+    (clicked)="returnToPreviousPage()"
+  >
+  </generic-button>
+  <a
+    href="/"
+    [routerLink]="['/']"
+    rel="noopener noreferrer"
+    [matTooltip]="'Inicio'"
+  >
+    <logo-show [logoHeight]="'3rem'" [logoWidth]="'3rem'"></logo-show>
+  </a>
+  <div class="bef bef-w-2_5rem bef-h-2_5rem"></div>
+</header>
+<h1 class="text-center fw-bold">Agenda de Eventos App</h1>
+<section>
+  <h2 class="text-center mt-3">Acerca de nosotros</h2>
+  <p class="d-block mx-auto bef bef-w-clampSD250pxCOM75perCOM750pxED">
+    Este es un proyecto que esta en modo prueba, servirá para crear eventos con
+    actividades y poder gestionar a los asistentes y operadores.
+  </p>
+  <p class="d-block mx-auto bef bef-w-clampSD250pxCOM75perCOM750pxED">
+    Actualmente esta en modo MVP(Minimum Viable Product) y se irá mejorando poco
+    a poco, en esta página se irá subiendo los cambios en las versiones de la
+    app y se irá documentando el proyecto.
+  </p>
+  <h2 class="text-center mt-3">¿Cómo funciona?</h2>
+  <p class="d-block mx-auto bef bef-w-clampSD250pxCOM75perCOM750pxED">
+    En este momento se puede ver la versión 0.0.1 de la app, en la cual se puede
+    ver la funcionalidad de crear eventos, actividades y asignar operadores a
+    las actividades(aunque aún no se bloquean las actividades por operador).
+    También se puede ver la funcionalidad de de poder ver los eventos creados y
+    poder ver los detalles de cada evento.
+  </p>
+  <p class="d-block mx-auto bef bef-w-clampSD250pxCOM75perCOM750pxED">
+    En la siguiente versión se agregará la funcionalidad de asignar asistentes a
+    las actividades y limitar las actividades conforme pueden ser.
+  </p>
+  <h2 class="text-center mt-3">¿Quiénes lo hicimos?</h2>
+  <ul
+    class="list-group list-group-flush d-block mx-auto bef bef-w-clampSD250pxCOM75perCOM750pxED"
+  >
+    <li class="list-group-item">
+      Pamela Betancourt diseño la aplicación en figma.
+    </li>
+    <li class="list-group-item">
+      Lynx Pardelle implemento el diseño usando Angular, desarrollo la API con
+      Express en Node y diseño los esquemas de la base de datos para usarlos con
+      Mongo DB.
+    </li>
+    <li class="list-group-item">
+      Alseam dió la idea primigenia para un proyecto que pudiera ser de utilidad
+      para sus clientes, de allí ha escalado bastante, pero la idea de una
+      aplicación para gestionar eventos fue de Alex, gracias.
+    </li>
+  </ul>
+  <h2 class="text-center mt-3">Cuándo saldrá una versión estable?</h2>
+  <p class="d-block mx-auto bef bef-w-clampSD250pxCOM75perCOM750pxED">
+    Por ahora se va a probar y mostrar el mvp, además se tienen que resolver
+    algunos problemas de memoria y sería deseable sacar alguna manera de
+    monetizar el proyecto, ya sea consiguiendo un cliente, abriendo una forma de
+    pago para e uso de la aplicación(del lado dela gestión) o quizás a través de
+    donaciones, en cualquiera de los casos, se irá informando y si quieres
+    puedes ponerte en contacto con Lynx Pardelle o con Pamela Betancourt para
+    platicar de negocios.
+  </p>
+</section>
+<!-- Footer -->
+<footer
+  class="position-fixed bottom-0 start-0 w-100 my-4 d-flex mx-auto flex-wrap justify-content-evenly align-items-center"
+>
+  <a
+    href="https://www.figma.com/file/Cqcq8XAfSr9u5urofwRqHj/AgendaProject?node-id=181%3A3592&t=trFYYlXMWLd3dkAD-1"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="text-decoration-none bef bef-text-resaltaBG"
+    >Prototipo en Figma</a
+  >
+  <a
+    href="https://lynxpardelle.com/"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="text-decoration-none bef bef-text-resaltaBG"
+    >Portafolio de Lynx Pardelle</a
+  >
+  <a
+    href="https://www.linkedin.com/in/pamela-betancourt-r/"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="text-decoration-none bef bef-text-resaltaBG"
+    >LinkedIn de Pamela Betancourt</a
+  >
+</footer>

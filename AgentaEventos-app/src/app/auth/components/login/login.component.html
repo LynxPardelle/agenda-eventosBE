@@ -1,0 +1,114 @@
+<!-- Header -->
+<header
+  class="d-flex mx-auto flex-wrap justify-content-between align-items-center bef bef-w-calcSD100per__MIN__2remED"
+>
+  <generic-button
+    [type]="'return'"
+    [classButton]="
+      'd-block mat-elevation-z3 bef bef-btnOutline-btnBG bef-bc-btnBG bef-bW-btnBG bef-bS-solid bef-text-mainText bef-textHover-mainBG bef-cursor-pointer bef-r-100per bef-fs-2rem bef-h-2_5rem bef-w-2_5rem p-0'
+    "
+    [customHtml]="getHTML('back')"
+    [disabledClassButton]="
+      'd-block bef bef-btnOutline-btnBG__OPA__0_66 bef-bc-btnBG bef-bW-btnBG bef-bS-solid bef-text-mainText bef-textHover-mainBG bef-cursor-pointer bef-r-100per bef-fs-2rem bef-h-2_5rem bef-w-2_5rem p-0'
+    "
+    [tooltip]="'Regresar'"
+    [tooltipPosition]="'left'"
+    [showTooltip]="true"
+    [tooltipClass]="'bef bef-r-1rem bef-text-mainBG bef-bg-btnBG bef-p-1rem'"
+    (clicked)="returnToPreviousPage()"
+  >
+  </generic-button>
+  <a
+    href="/"
+    [routerLink]="['/']"
+    rel="noopener noreferrer"
+    [matTooltip]="'Inicio'"
+  >
+    <logo-show [logoHeight]="'3rem'" [logoWidth]="'3rem'"></logo-show>
+  </a>
+  <div class="bef bef-w-2_5rem bef-h-2_5rem"></div>
+</header>
+<h1
+  class="fw-bold h1 text-start bef bef-textAlign-md-center bef-m-2rem bef-fs-2rem"
+>
+  Inicia Sesión
+</h1>
+<p class="text-start bef bef-textAlign-md-center bef-mx-2rem">
+  Inicia sesión para continuar con tu experiencia en el evento.
+</p>
+<form class="d-block mx-auto bef bef-my-2rem bef-w-clampSD250pxCOM90perCOM450pxED">
+  <div class="bef bef-my-1_5rem">
+    <generic-input
+      [labelTitle]="'Correo electrónico'"
+      [placeholder]="'Correo electrónico'"
+      [thingFather]="{ email: '' }"
+      [thing]="'email'"
+      [type]="'text'"
+      [spans]="[
+        {
+          text: 'El correo electrónico es necesario para iniciar sesión.',
+          evalThing: 'required',
+          spanClass: 'd-block mx-auto fw-bold bef bef-text-danger bef-my-1rem'
+        },
+        {
+          text: 'El correo electrónico debe ser válido.',
+          evalThing: 'email',
+          spanClass: 'd-block mx-auto fw-bold bef bef-text-danger bef-my-1rem'
+        }
+      ]"
+      [required]="true"
+      (changesInput)="changesInput($event)"
+    ></generic-input>
+  </div>
+  <div class="bef bef-my-1_5rem">
+    <generic-input
+      [labelTitle]="'Contraseña'"
+      [placeholder]="'Contraseña'"
+      [thingFather]="{ password: '' }"
+      [thing]="'password'"
+      [type]="'password'"
+      [spans]="[
+        {
+          text: 'La contraseña es necesaria para iniciar sesión.',
+          evalThing: 'required',
+          spanClass: 'd-block mx-auto fw-bold bef bef-text-danger bef-my-1rem'
+        },
+        {
+          text: 'La contraseña debe contener al menos una letra, una mayúscula, un número y un carácter especial. Además de tener una longitud de al menos 8 caracteres.',
+          evalThing: 'password',
+          spanClass: 'd-block mx-auto fw-bold bef bef-text-danger bef-my-1rem'
+        }
+      ]"
+      [required]="true"
+      (changesInput)="changesInput($event)"
+    ></generic-input>
+  </div>
+</form>
+
+<a
+  class="d-block mx-auto bef bef-my-2rem text-center"
+  [routerLink]="['/auth/recover']"
+  href="/auth/recover"
+  rel="noopener noreferrer"
+>
+  ¿Olvidaste tu contraseña?
+</a>
+<div class="d-flex justify-content-end justify-content-md-center">
+  <generic-button
+    [type]="'Continuar'"
+    [classButton]="'d-block bef bef-btn-btnBG bef-text-mainBG bef-m-2rem'"
+    [customHtml]="'Continuar'"
+    [disabled]="!checkIfFormValid()"
+    [disabledClassButton]="
+      'd-block bef bef-btn-btnBG__OPA__0_66 bef-text-mainBG bef-m-2rem'
+    "
+    [tooltip]="'Iniciar Sesión'"
+    [tooltipPosition]="'above'"
+    [showTooltip]="true"
+    [tooltipClass]="'bef bef-r-1rem bef-text-mainBG bef-bg-btnBG bef-p-1rem'"
+    [matButtonType]="'raised'"
+    (clicked)="onSubmit()"
+  >
+    Continuar
+  </generic-button>
+</div>

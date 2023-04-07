@@ -1,9 +1,10 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { PaginateModel, Schema } from "mongoose";
 import { IMain } from "./main";
-export default mongoose.model<IMain>(
+const mongoosePaginate = require("mongoose-paginate");
+export default mongoose.model<IMain, PaginateModel<IMain>>(
   "MainHistory",
   new mongoose.Schema({
-    logo: String,
+    logo: { type: Schema.Types.ObjectId, ref: "File" },
     title: String,
     welcome: String,
     titleColor: String,
@@ -21,5 +22,5 @@ export default mongoose.model<IMain>(
     ver: Number,
     isDeleted: Boolean,
     changeHistory: [{ type: Schema.Types.ObjectId, ref: "MainHistory" }],
-  })
+  }).plugin(mongoosePaginate)
 );

@@ -1,0 +1,69 @@
+<!-- Header -->
+<header
+  class="d-flex mx-auto flex-wrap justify-content-between align-items-center bef bef-w-calcSD100per__MIN__2remED"
+>
+  <generic-button
+    [type]="'return'"
+    [classButton]="
+      'd-block mat-elevation-z3 bef bef-btnOutline-btnBG bef-bc-btnBG bef-bW-btnBG bef-bS-solid bef-text-mainText bef-textHover-mainBG bef-cursor-pointer bef-r-100per bef-fs-2rem bef-h-2_5rem bef-w-2_5rem p-0'
+    "
+    [customHtml]="getHTML('back')"
+    [disabledClassButton]="
+      'd-block bef bef-btnOutline-btnBG__OPA__0_66 bef-bc-btnBG bef-bW-btnBG bef-bS-solid bef-text-mainText bef-textHover-mainBG bef-cursor-pointer bef-r-100per bef-fs-2rem bef-h-2_5rem bef-w-2_5rem p-0'
+    "
+    [tooltip]="'Regresar'"
+    [tooltipPosition]="'left'"
+    [showTooltip]="true"
+    [tooltipClass]="'bef bef-r-1rem bef-text-mainBG bef-bg-btnBG bef-p-1rem'"
+    (clicked)="returnToPreviousPage()"
+  >
+  </generic-button>
+  <a
+    href="/"
+    [routerLink]="['/']"
+    rel="noopener noreferrer"
+    [matTooltip]="'Inicio'"
+  >
+    <logo-show [logoHeight]="'3rem'" [logoWidth]="'3rem'"></logo-show>
+  </a>
+  <div class="bef bef-w-2_5rem bef-h-2_5rem"></div>
+</header>
+<h1
+  class="fw-bold h1 text-start bef bef-textAlign-md-center bef-m-2rem bef-fs-2rem"
+>
+  Menú
+</h1>
+<ul class="list-group list-group-flush bef bef-bg-mainBG bef-m-2rem">
+  <li
+    class="list-group-item bef bef-bg-mainBG"
+    *ngFor="let menuOption of menuOptions"
+  >
+    <span [ngSwitch]="true">
+      <a
+        *ngSwitchCase="!!menuOption.link"
+        class="d-block h4 text-decoration-none bef bef-m-0_5rem bef-text-mainText"
+        href="{{ menuOption.link }}"
+        [routerLink]="[menuOption.link]"
+        rel="noopener noreferrer"
+        [matTooltip]="menuOption.option"
+      >
+        {{ menuOption.option }}
+      </a>
+      <a
+        *ngSwitchCase="!!menuOption.click"
+        (click)="clicked(menuOption.click ? menuOption.click : '')"
+        class="d-block h4 text-decoration-none bef bef-m-0_5rem bef-text-mainText"
+        [matTooltip]="menuOption.option"
+      >
+        {{ menuOption.option }}
+      </a>
+      <span
+        *ngSwitchDefault
+        class="d-block h4 text-decoration-none bef bef-m-2rem bef-text-mainText"
+        [matTooltip]="menuOption.option"
+      >
+        {{ menuOption.option }}
+      </span>
+    </span>
+  </li>
+</ul>

@@ -1,0 +1,204 @@
+<label
+  *ngIf="!type.includes('select') && labelTitle !== ''"
+  [exist]="!type.includes('select') && labelTitle !== ''"
+  (ngInit)="cssCreate()"
+  class="{{ labelClasses }}"
+  for="{{ thing }}"
+>
+  {{ labelTitle }}
+</label>
+<ng-container [ngSwitch]="type">
+  <ng-container *ngSwitchCase="'textarea'">
+    <textarea
+      class="bef"
+      [ngClass]="
+        disabled && !!inputDisabledClasses && inputDisabledClasses !== ''
+          ? inputDisabledClasses
+          : readonly && !!readonlyClasses && readonlyClasses !== ''
+          ? readonlyClasses
+          : inputClasses
+      "
+      name="{{ thing }}"
+      #[thing]="ngModel"
+      [(ngModel)]="thingFather[thing]"
+      (ngModelChange)="writtingInInput($event)"
+      placeholder="{{ type !== 'date' ? placeholder : thingFather[thing] }}"
+      [disabled]="disabled"
+      [readonly]="readonly"
+      [required]="required"
+    >
+    </textarea>
+  </ng-container>
+  <ng-container *ngSwitchCase="'checkbox'">
+    <div class="bef bef-w-250px">
+      <button
+        class="btn bef bef-w-1_5rem bef-h-1_5rem bef-r-0_5rem"
+        [ngClass]="
+          (disabled && !!disabledClassButton && disabledClassButton !== ''
+            ? disabledClassButton
+            : buttonClasses) +
+          (!!thingFather[thing] ? ' bef-btn-resaltaBG' : ' bef-btn-white')
+        "
+        [exist]="type === 'checkbox'"
+        (ngInit)="cssCreate()"
+        (click)="changeValue(!thingFather[thing])"
+        [disabled]="disabled || readonly"
+      ></button>
+    </div>
+  </ng-container>
+  <ng-container *ngSwitchCase="'radio'">
+    <div
+      class="bef bef-w-250px d-flex justify-content-evenly align-items-center"
+    >
+      <div
+        *ngFor="let op of options; let $last = last"
+        [exist]="$last"
+        (ngInit)="cssCreate()"
+        class="d-flex flex-column justify-content-center align-items-center"
+      >
+        <p class="text-center text-capitalize">{{ op.option }}</p>
+        <button
+          class="btn bef bef-w-1_5rem bef-h-1_5rem bef-r-100px mat-elevation-z2"
+          [ngClass]="
+            (disabled && !!disabledClassButton && disabledClassButton !== ''
+              ? disabledClassButton
+              : buttonClasses) +
+            (thingFather[thing] === op.click
+              ? op.customClasses && op.customClasses !== ''
+                ? op.customClasses
+                : ' bef-btn-resaltaBG '
+              : op.disabledClasses && op.disabledClasses !== ''
+              ? op.disabledClasses
+              : ' bef-btn-white ')
+          "
+          (click)="changeValue(op.click)"
+          [disabled]="disabled || readonly"
+        ></button>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngSwitchCase="'select'">
+    <generic-dropdown
+      [labelTitle]="labelTitle"
+      [placeholder]="placeholder"
+      [labelClasses]="labelClasses"
+      [buttonClasses]="buttonClasses"
+      [listClasses]="listClasses"
+      [options]="options"
+      [disabled]="disabled || readonly"
+      (clickedTitle)="clickedTitle.emit($event)"
+      (clicked)="clicked.emit($event)"
+    ></generic-dropdown>
+  </ng-container>
+  <ng-container *ngSwitchCase="'select-withSearcher'">
+    <generic-dropdown
+      [labelTitle]="labelTitle"
+      [placeholder]="placeholder"
+      [labelClasses]="labelClasses"
+      [buttonClasses]="buttonClasses"
+      [disabledClassButton]="disabledClassButton"
+      [listClasses]="listClasses"
+      [options]="options"
+      [disabled]="disabled || readonly"
+      [withSearcher]="true"
+      (clickedTitle)="clickedTitle.emit($event)"
+      (clicked)="clicked.emit($event)"
+      (changesInput)="changesInput.emit($event)"
+    ></generic-dropdown>
+  </ng-container>
+  <ng-container *ngSwitchCase="'multiselect-withSearcher'">
+    <generic-dropdown
+      [labelTitle]="labelTitle"
+      [placeholder]="placeholder"
+      [labelClasses]="labelClasses"
+      [buttonClasses]="buttonClasses"
+      [disabledClassButton]="disabledClassButton"
+      [listClasses]="listClasses"
+      [options]="options"
+      [disabled]="disabled || readonly"
+      [withSearcher]="true"
+      [multiselect]="true"
+      (clickedTitle)="clickedTitle.emit($event)"
+      (clicked)="clicked.emit($event)"
+      (changesInput)="changesInput.emit($event)"
+    ></generic-dropdown>
+  </ng-container>
+  <ng-container *ngSwitchCase="'date'">
+    <input
+      class="bef"
+      [ngClass]="
+        disabled && !!inputDisabledClasses && inputDisabledClasses !== ''
+          ? inputDisabledClasses
+          : readonly && !!readonlyClasses && readonlyClasses !== ''
+          ? readonlyClasses
+          : inputClasses
+      "
+      type="date"
+      name="{{ thing }}"
+      #[thing]="ngModel"
+      [(ngModel)]="thingFather[thing]"
+      (ngModelChange)="writtingInInput($event)"
+      placeholder="{{ thingFather[thing] | date : 'dd/MM/yyyy' }}"
+      value="{{ thingFather[thing] | date : 'dd/MM/yyyy' }}"
+      [disabled]="disabled"
+      [readOnly]="readonly"
+      [required]="required"
+    />
+  </ng-container>
+  <ng-container *ngSwitchCase="'date&&time'">
+    <input
+      class="bef"
+      [ngClass]="
+        disabled && !!inputDisabledClasses && inputDisabledClasses !== ''
+          ? inputDisabledClasses
+          : readonly && !!readonlyClasses && readonlyClasses !== ''
+          ? readonlyClasses
+          : inputClasses
+      "
+      type="date"
+      name="{{ thing }}"
+      #[thing]="ngModel"
+      [(ngModel)]="thingFather[thing]"
+      (ngModelChange)="writtingInInput($event)"
+      placeholder="{{ thingFather[thing] | date : 'dd/MM/yyyy HH:mm' }}"
+      value="{{ thingFather[thing] | date : 'dd/MM/yyyy' }}"
+      [disabled]="disabled"
+      [readOnly]="readonly"
+      [required]="required"
+    />
+  </ng-container>
+  <ng-container *ngSwitchDefault>
+    <input
+      class="bef"
+      [ngClass]="
+        disabled && !!inputDisabledClasses && inputDisabledClasses !== ''
+          ? inputDisabledClasses
+          : readonly && !!readonlyClasses && readonlyClasses !== ''
+          ? readonlyClasses
+          : inputClasses
+      "
+      type="{{ type }}"
+      name="{{ thing }}"
+      #[thing]="ngModel"
+      [(ngModel)]="thingFather[thing]"
+      (ngModelChange)="writtingInInput($event)"
+      placeholder="{{ type !== 'date' ? placeholder : thingFather[thing] }}"
+      value="thingFather[thing]"
+      [disabled]="disabled"
+      [readOnly]="readonly"
+      [required]="required"
+    />
+  </ng-container>
+</ng-container>
+<ng-container
+  *ngFor="let span of spans; let last$ = last"
+  [exist]="last$"
+  (ngInit)="cssCreate()"
+>
+  <span
+    [ngClass]="getClasses(span.spanClass + ' bef')"
+    *ngIf="evalThing(span.evalThing)"
+  >
+    {{ span.text }}
+  </span>
+</ng-container>

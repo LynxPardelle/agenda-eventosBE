@@ -1,0 +1,223 @@
+<div
+  class="d-flex flex-wrap felx-column align-items-center justify-content-center bef bef-gap-1rem bef-p-1rem"
+>
+  <mat-card
+    *ngFor="let data of dataSource; let index$ = index"
+    class="mat-elevation-z2 bef bef-w-clampSD250px__95per__400pxED {{
+      cardClasses
+    }}"
+    [ngClass]="{ selectedRowClasses: selectedRow === data }"
+    (click)="changeRowSelected(data)"
+  >
+    <div class="d-flex flex-wrap justify-content-between align-items-start m-0">
+      <div class="d-flex flex-wrap justify-content-between align-items-center">
+        <div
+          *ngFor="let special of specialColumns; let last$ = last"
+          [exist]="last$"
+          (ngInit)="cssCreate()"
+          class="uppercase fw-bold d-flex flex-wrap justify-content-between align-items-center bef bef-fs-1rem bef-me-1rem"
+        >
+          {{ special }}:
+          <div class="bef bef-ms-0_5rem">
+            <ng-container
+              *ngIf="
+                data[special.toString()] &&
+                getSpecialCell(
+                  type + '-' + special + '-' + data[special.toString()]
+                ) as specialCell
+              "
+            >
+              <special-cell
+                [type]="specialCell.type"
+                [config]="specialCell.object"
+                [thing]="specialCell.thing"
+                [customHtml]="customHtml"
+                [uploadSubject]="uploadSubject"
+                (clicked)="clicked.emit($event)"
+                (changesInput)="changesInput.emit($event)"
+                (buttonId)="buttonId.emit($event)"
+                (recoverThing)="recoverThing.emit($event)"
+              ></special-cell>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div
+        class="d-flex flex-wrap justify-content-end align-items-center bef bef-wmx-50per"
+      >
+        <span
+          *ngFor="let action of actions; let last$ = last"
+          [exist]="last$"
+          (ngInit)="cssCreate()"
+        >
+          <span
+            matTooltip="{{ !!action.tooltip ? action.tooltip : '' }}"
+            [matTooltipPosition]="'above'"
+            [matTooltipDisabled]="!action.tooltip"
+            [ngSwitch]="true"
+            class="bef-cursor-pointer bef bef-fs-1rem bef-mx-1rem {{
+              actionClasses
+            }}"
+            (click)="parseAction(action, data)"
+          >
+            <ng-container *ngSwitchCase="action.type.includes('edit')">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                fill="currentColor"
+                class="bi bi-pencil"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"
+                />
+              </svg>
+            </ng-container>
+            <ng-container *ngSwitchCase="action.type.includes('visit')">
+              Visit
+            </ng-container>
+            <ng-container *ngSwitchCase="action.type.includes('delete')">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                fill="currentColor"
+                class="bi bi-trash3-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"
+                />
+              </svg>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              {{ action.customIcon ? action.customIcon : "No custom Icon" }}
+            </ng-container>
+          </span>
+        </span>
+      </div>
+    </div>
+    <mat-card-content>
+      <mat-tab-group
+        class="tab-labels-center"
+        (selectedIndexChange)="selectTab(index$, $event)"
+        mat-align-tabs="center"
+        [headerPosition]="'below'"
+        (activateInkBar)="(false)"
+      >
+        <mat-tab *ngFor="let tab of getTabs()">
+          <ng-container
+            *ngTemplateOutlet="tabTemplate; context: { tab: tab, data: data }"
+          ></ng-container>
+          <ng-template mat-tab-label>
+            <span
+              class="bef bef-w-1rem bef-h-1rem mx-auto rounded-circle"
+              [ngClass]="{
+                'bef-bg-btnBG': !!getIfActiveType(index$, tab),
+                'bef-bg-btnBG__OPA__0_5': !getIfActiveType(index$, tab)
+              }"
+            >
+            </span>
+          </ng-template>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+</div>
+<ng-template #tabTemplate let-tab="tab" let-data="data">
+  <div
+    class="d-flex flex-wrap justify-content-center justify-content-sm-between bef bef-my-0_5rem"
+  >
+    <div
+      *ngFor="let c of getElementsInTab(tab); let i = index"
+      class="w-50 bef bef-my-0_5rem"
+    >
+      <div class="uppercase fw-bold bef bef-fs-1rem text-break">
+        {{ c | tableTitleParser }}:
+      </div>
+      <ng-container [ngSwitch]="true">
+        <div
+          *ngSwitchCase="data[c.toString()] && checkIfDate(data[c].toString())"
+        >
+          {{ data[c] | date : dateFormat }}
+        </div>
+        <div
+          *ngSwitchDefault
+          [innerHTML]="data[c] ? data[c] : ('' | safeHtml)"
+        ></div>
+      </ng-container>
+    </div>
+  </div>
+</ng-template>
+<div
+  *ngIf="!!paginationActive"
+  [exist]="!!paginationActive"
+  (ngInit)="cssCreate()"
+  class="d-flex flex-wrap flex-column flex-sm-row align-items-center justify-content-between"
+>
+  <div
+    class="d-flex justify-content-center align-items-center bef bef-w-clampSD250pxCOM__80perCOM__450pxED {{
+      paginatorClasses
+    }}"
+  >
+    <ng-container *ngIf="currentPage > 3">
+      <span
+        (click)="changePage.emit(1)"
+        class="bef bef-mx-0_5rem bef-mx-sm-1_5rem bef-cursor-pointer"
+      >
+        {{ 1 }}
+      </span>
+      <span class="bef bef-mx-0_5rem bef-mx-sm-1_5rem" *ngIf="currentPage > 4">
+        ...
+      </span>
+    </ng-container>
+    <ng-container *ngFor="let page of pages">
+      <span
+        (click)="changePage.emit(page)"
+        class="bef bef-mx-0_5rem bef-mx-sm-1_5rem bef-cursor-pointer"
+        *ngIf="page >= currentPage - 2 && page <= currentPage + 2"
+      >
+        {{ page }}
+      </span>
+    </ng-container>
+    <ng-container *ngIf="pages.length > currentPage + 2">
+      <span
+        *ngIf="pages.length > currentPage + 3"
+        class="bef bef-mx-0_5rem bef-mx-sm-1_5rem"
+      >
+        ...
+      </span>
+      <span
+        (click)="changePage.emit(pages[pages.length - 1])"
+        class="bef bef-mx-0_5rem bef-mx-sm-1_5rem bef-cursor-pointer"
+      >
+        {{ pages[pages.length - 1] }}
+      </span>
+    </ng-container>
+  </div>
+  <generic-dropdown
+    [buttonClasses]="buttonClasses"
+    [listClasses]="listClasses"
+    [placeholder]="'Elementos por página: ' + pageSize.toString()"
+    [options]="[
+      { type: 'menuitem', option: '3', click: '3' },
+      { type: 'menuitem', option: '5', click: '5' },
+      { type: 'menuitem', option: '8', click: '8' },
+      { type: 'menuitem', option: '10', click: '10' },
+      { type: 'menuitem', option: '15', click: '15' },
+      { type: 'menuitem', option: '20', click: '20' },
+      { type: 'menuitem', option: '25', click: '25' },
+      { type: 'menuitem', option: '50', click: '50' },
+      { type: 'menuitem', option: '100', click: '100' },
+      { type: 'menuitem', option: '200', click: '200' },
+      { type: 'menuitem', option: '300', click: '300' },
+      { type: 'menuitem', option: '500', click: '500' },
+      { type: 'menuitem', option: '1000', click: '1000' },
+      { type: 'menuitem', option: '3000', click: '3000' },
+      { type: 'menuitem', option: '5000', click: '5000' },
+      { type: 'menuitem', option: '10000', click: '10000' }
+    ]"
+    (clicked)="changePageSize2Emit($event.option)"
+  ></generic-dropdown>
+</div>

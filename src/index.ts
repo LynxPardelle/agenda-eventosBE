@@ -1,10 +1,14 @@
 /* Modules */
+import dotenv from "dotenv";
+dotenv.config();
 import express, { Request, Response } from "express";
 import path from "path";
 import cors from "cors";
 
 /* Import Routes */
 import main_routes from "./routes/main";
+import user_routes from "./routes/user";
+import evento_routes from "./routes/evento";
 
 /* Init */
 const app = express();
@@ -18,9 +22,10 @@ app.use(
 
 /* Config Headers & CORS */
 const allowedDomains = [
+  "*",
   "http://localhost:4200",
-  "http://localhost:6668",
-  "https://agenda-eventos.lynxpardelle.com",
+  "http://localhost:3669",
+  "http://agenda-eventos.lynxpardelle.com",
   "https://agenda-eventos.lynxpardelle.com",
 ];
 app.use(
@@ -35,18 +40,22 @@ app.use(
       }
       return callback(null, true);
     },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   })
 );
 
 /* Routes */
+app.use(
+  "/",
+  express.static("client", {
+    redirect: false,
+  })
+);
 app.use("/api/main", main_routes);
+app.use("/api/user", user_routes);
+app.use("/api/evento", evento_routes);
 
-/* Static files */
-app.use("/", express.static("client", { redirect: false }));
-app.get("*", (req: Request, res: Response) => {
-  res.sendFile(path.resolve("client/index.html"));
-});
-
+/* Test */
 app.get("/datos-autor", (req: Request, res: Response) => {
   console.log("Hello World");
   return res.status(200).send({
@@ -54,7 +63,13 @@ app.get("/datos-autor", (req: Request, res: Response) => {
     url: "https://www.lynxpardelle.com",
   });
 });
+/* Static files */
+app.get("*", (req: Request, res: Response) => {
+  res.sendFile(path.resolve("client/index.html"));
+});
 
+/* Port */
+app.set("port", process.env.PORT || "3669");
 /* Start Server */
 app.listen(app.get("port"), () => {
   console.log(`Server on port ${app.get("port")}`);

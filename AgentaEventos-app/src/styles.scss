@@ -1,0 +1,20 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Importing Datepicker SCSS file. */
+@import "node_modules/ngx-bootstrap/datepicker/bs-datepicker";
+
+.mdc-tab__text-label, .mdc-evolution-chip__text-label{
+  color: inherit !important;
+}
+
+html, body {
+  overflow-x: hidden;
+  position: relative;
+}
+
+body .swal2-container .swal2-popup {
+  opacity: 1 !important;
+}

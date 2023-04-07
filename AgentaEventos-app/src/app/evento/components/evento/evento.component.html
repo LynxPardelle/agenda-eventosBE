@@ -1,0 +1,793 @@
+<!-- Header -->
+<header
+  class="d-flex mx-auto flex-wrap justify-content-between align-items-center bef bef-w-calcSD100per__MIN__2remED"
+>
+  <generic-button
+    [type]="'return'"
+    [classButton]="
+      'd-block mat-elevation-z3 bef bef-btnOutline-btnBG bef-bc-btnBG bef-bW-btnBG bef-bS-solid bef-text-mainText bef-textHover-mainBG bef-cursor-pointer bef-r-100per bef-fs-2rem bef-h-2_5rem bef-w-2_5rem p-0'
+    "
+    [customHtml]="getHTML('back')"
+    [disabledClassButton]="
+      'd-block bef bef-btnOutline-btnBG__OPA__0_66 bef-bc-btnBG bef-bW-btnBG bef-bS-solid bef-text-mainText bef-textHover-mainBG bef-cursor-pointer bef-r-100per bef-fs-2rem bef-h-2_5rem bef-w-2_5rem p-0'
+    "
+    [tooltip]="'Regresar'"
+    [tooltipPosition]="'left'"
+    [showTooltip]="true"
+    [tooltipClass]="'bef bef-r-1rem bef-text-mainBG bef-bg-btnBG bef-p-1rem'"
+    (clicked)="returnToPreviousPage()"
+  >
+  </generic-button>
+  <a
+    href="/"
+    [routerLink]="['/']"
+    rel="noopener noreferrer"
+    [matTooltip]="'Inicio'"
+  >
+    <logo-show [logoHeight]="'3rem'" [logoWidth]="'3rem'"></logo-show>
+  </a>
+  <div class="bef bef-w-2_5rem bef-h-2_5rem">
+    <generic-button
+      *ngIf="!!isEdit"
+      [type]="'cancelEdit'"
+      [classButton]="
+        'd-block mat-elevation-z3 bef bef-btnOutline-btnBG bef-bc-btnBG bef-bW-btnBG bef-bS-solid bef-text-mainText bef-textHover-mainBG bef-cursor-pointer bef-r-100per bef-fs-1_5rem bef-h-2_5rem bef-w-2_5rem p-0'
+      "
+      [customHtml]="'X'"
+      [disabledClassButton]="
+        'd-block bef bef-btnOutline-btnBG__OPA__0_66 bef-bc-btnBG bef-bW-btnBG bef-bS-solid bef-text-mainText bef-textHover-mainBG bef-cursor-pointer bef-r-100per bef-fs-1_5rem bef-h-2_5rem bef-w-2_5rem p-0'
+      "
+      [tooltip]="'Cancelar edición'"
+      [tooltipPosition]="'left'"
+      [showTooltip]="true"
+      [tooltipClass]="'bef bef-r-1rem bef-text-mainBG bef-bg-btnBG bef-p-1rem'"
+      (clicked)="isEdit = !isEdit"
+    >
+    </generic-button>
+  </div>
+</header>
+<mat-tab-group [dynamicHeight]="true" [disableRipple]="true">
+  <mat-tab
+    label="{{ evento.title }}"
+    labelClass="bef bef-bgFocus-resaltaBG bef-textFocus-mainBG bef-text-mainText bef-r-0_25rem"
+  >
+    <div class="mx-auto bef bef-w-calcSD100per__MIN__2remED bef-hmn-100vh">
+      <img
+        *ngIf="!!evento.headerImage"
+        [src]="url + 'file/' + evento.headerImage.location | safeHtml : 'url'"
+        alt="{{ evento.headerImage.title }}"
+        class="bef bef-w-100per bef-hmx-20rem bef-object-cover bef-object-center bef-r-0_125rem"
+      />
+      <ng-container *ngIf="!!isEdit">
+        <file-uploader
+          [uploadInputConfig]="{
+            type: 'uploadAll',
+            url: url + 'files/evento/headerImage/' + evento._id,
+            method: 'POST',
+            headers: {
+              Authorization: token
+            }
+          }"
+          [options]="{
+            concurrency: 1,
+            maxUploads: 1,
+            maxFileSize: 500000000,
+            allowedContentTypes: [
+              'image/jpeg',
+              'image/jpg',
+              'image/png',
+              'image/webp'
+            ]
+          }"
+          [uploaderId]="'headerImageEvento'"
+          [uploaderBehaviour]="'ShowFiles&ShowUploadButton'"
+          [dragNdropActive]="true"
+          [customHtml]="'Subir imagen de cabecera'"
+          [tooltip]="'Subir archivo de cabecera del evento'"
+        ></file-uploader>
+      </ng-container>
+      <!-- Title Edit -->
+      <div
+        *ngIf="
+          (changers.includes('title') || evento.title === '') &&
+            isEdit === true;
+          else elseEditTitleTemplate
+        "
+        class="d-flex flex-wrap justify-content-between align-items-end bef bef-my-2rem"
+      >
+        <generic-input
+          class="bef bef-w-calcSD100per__MIN__3remED"
+          [labelTitle]="'Título de evento'"
+          [placeholder]="evento.title"
+          [thingFather]="evento"
+          [thing]="'title'"
+          [type]="'text'"
+          [spans]="[
+            {
+              text: 'El título del evento es necesario.',
+              evalThing: 'required',
+              spanClass:
+                'd-block mx-auto fw-bold bef bef-text-danger bef-my-1rem'
+            }
+          ]"
+          [required]="true"
+          (changesInput)="changesInput($event)"
+        ></generic-input>
+        <generic-button
+          [type]="'title'"
+          [classButton]="
+            'd-block mat-elevation-z3 bef bef-btn-btnBG bef-text-mainBG bef-cursor-pointer bef-r-100per bef-fs-1rem bef-h-2_5rem bef-w-2_5rem'
+          "
+          [customHtml]="'X'"
+          [disabledClassButton]="
+            'd-block bef bef-btn-btnBG__OPA__0_66 bef-text-mainBG bef-cursor-pointer bef-r-100per bef-fs-3rem bef-h-3_5rem bef-w-3_5rem'
+          "
+          [tooltip]="'Cancelar edición'"
+          [tooltipPosition]="'left'"
+          [showTooltip]="true"
+          [tooltipClass]="
+            'bef bef-r-1rem bef-text-mainBG bef-bg-btnBG bef-p-1rem'
+          "
+          [matButtonType]="'icon'"
+          (clicked)="changeChangers($event)"
+        >
+        </generic-button>
+      </div>
+      <!-- Title -->
+      <ng-template #elseEditTitleTemplate>
+        <h1
+          class="bef bef-fs-2rem fw-bold mx-auto text-break my-0 bef-mt-md-3rem text-start bef-textAlign-md-center"
+        >
+          {{ evento.title }}
+          <svg
+            *ngIf="!!isEdit"
+            (click)="changeChangers('title')"
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            fill="currentColor"
+            class="bi bi-pencil"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"
+            />
+          </svg>
+        </h1>
+      </ng-template>
+      <!-- SubTitle Edit -->
+      <div
+        *ngIf="
+          (changers.includes('subtitle') || evento.subtitle === '') &&
+            isEdit === true;
+          else elseEditSubTitleTemplate
+        "
+        class="d-flex flex-wrap justify-content-between align-items-end bef bef-my-2rem"
+      >
+        <generic-input
+          class="bef bef-w-calcSD100per__MIN__3remED"
+          [labelTitle]="'Subtítulo de evento'"
+          [placeholder]="evento.subtitle"
+          [thingFather]="evento"
+          [thing]="'subtitle'"
+          [type]="'text'"
+          [spans]="[
+            {
+              text: 'El subtítulo del evento es necesario.',
+              evalThing: 'required',
+              spanClass:
+                'd-block mx-auto fw-bold bef bef-text-danger bef-my-1rem'
+            }
+          ]"
+          [required]="true"
+          (changesInput)="changesInput($event)"
+        ></generic-input>
+        <generic-button
+          [type]="'subtitle'"
+          [classButton]="
+            'd-block mat-elevation-z3 bef bef-btn-btnBG bef-text-mainBG bef-cursor-pointer bef-r-100per bef-fs-1rem bef-h-2_5rem bef-w-2_5rem'
+          "
+          [customHtml]="'X'"
+          [disabledClassButton]="
+            'd-block bef bef-btn-btnBG__OPA__0_66 bef-text-mainBG bef-cursor-pointer bef-r-100per bef-fs-3rem bef-h-3_5rem bef-w-3_5rem'
+          "
+          [tooltip]="'Cancelar edición'"
+          [tooltipPosition]="'left'"
+          [showTooltip]="true"
+          [tooltipClass]="
+            'bef bef-r-1rem bef-text-mainBG bef-bg-btnBG bef-p-1rem'
+          "
+          [matButtonType]="'icon'"
+          (clicked)="changeChangers($event)"
+        >
+        </generic-button>
+      </div>
+      <!-- SubTitle -->
+      <ng-template #elseEditSubTitleTemplate>
+        <h2 class="text-start bef bef-textAlign-md-center my-0 bef-mb-md-3rem">
+          {{ evento.subtitle }}
+          <svg
+            *ngIf="!!isEdit"
+            (click)="changeChangers('subtitle')"
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-pencil"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"
+            />
+          </svg>
+        </h2>
+      </ng-template>
+      <!-- Date & Place -->
+      <div
+        class="d-flex w-100 bef bef-w-md-75per mx-auto my-0 bef-my-md-3rem justify-content-start bef-justifyContent-md-center align-items-center"
+      >
+        <mat-chip class="bef bef-bg-resaltaBG bef-text-mainBG">
+          {{ evento.date | date : "dd/MM/yyyy hh:mm" }}
+        </mat-chip>
+        <mat-chip class="bef bef-bg-resaltaBG bef-text-mainBG">
+          {{ evento.place }}
+        </mat-chip>
+      </div>
+      <!-- Date & Place Edit -->
+      <div *ngIf="!!isEdit">
+        <generic-input
+          [inputClasses]="'form-control bef bef-mb-2rem'"
+          [labelTitle]="'Fecha del evento'"
+          [placeholder]="evento.date | date : 'dd/MM/yyyy hh:mm'"
+          [thingFather]="evento"
+          [thing]="'date'"
+          [type]="'date&&time'"
+          [spans]="[
+            {
+              text: 'La fecha del evento es necesaria.',
+              evalThing: 'required',
+              spanClass:
+                'd-block mx-auto fw-bold bef bef-text-danger bef-my-1rem'
+            }
+          ]"
+          [required]="true"
+          (changesInput)="changesInput($event)"
+        ></generic-input>
+        <generic-input
+          [inputClasses]="'form-control bef bef-mb-2rem'"
+          [labelTitle]="'Lugar del evento'"
+          [placeholder]="evento.place"
+          [thingFather]="evento"
+          [thing]="'place'"
+          [type]="'text'"
+          [spans]="[
+            {
+              text: 'El lugar del evento es necesario.',
+              evalThing: 'required',
+              spanClass:
+                'd-block mx-auto fw-bold bef bef-text-danger bef-my-1rem'
+            }
+          ]"
+          [required]="true"
+          (changesInput)="changesInput($event)"
+        ></generic-input>
+      </div>
+      <!-- Description Edit-->
+      <div
+        *ngIf="
+          (changers.includes('description') || evento.description === '') &&
+            isEdit === true;
+          else elseEditDescriptionTemplate
+        "
+        class="d-flex flex-wrap justify-content-between align-items-end bef bef-my-2rem"
+      >
+        <generic-input
+          class="bef bef-w-calcSD100per__MIN__3remED"
+          [labelTitle]="'Descripción'"
+          [placeholder]="'Descripción'"
+          [thingFather]="evento"
+          [thing]="'description'"
+          [type]="'textarea'"
+          [spans]="[
+            {
+              text: 'La descripción del evento es necesaria.',
+              evalThing: 'required',
+              spanClass:
+                'd-block mx-auto fw-bold bef bef-text-danger bef-my-1rem'
+            }
+          ]"
+          [required]="true"
+          (changesInput)="changesInput($event)"
+        ></generic-input>
+        <generic-button
+          [type]="'description'"
+          [classButton]="
+            'd-block mat-elevation-z3 bef bef-btn-btnBG bef-text-mainBG bef-cursor-pointer bef-r-100per bef-fs-1rem bef-h-2_5rem bef-w-2_5rem'
+          "
+          [customHtml]="'X'"
+          [disabledClassButton]="
+            'd-block bef bef-btn-btnBG__OPA__0_66 bef-text-mainBG bef-cursor-pointer bef-r-100per bef-fs-3rem bef-h-3_5rem bef-w-3_5rem'
+          "
+          [tooltip]="'Cancelar edición'"
+          [tooltipPosition]="'left'"
+          [showTooltip]="true"
+          [tooltipClass]="
+            'bef bef-r-1rem bef-text-mainBG bef-bg-btnBG bef-p-1rem'
+          "
+          [matButtonType]="'icon'"
+          (clicked)="changeChangers($event)"
+        >
+        </generic-button>
+      </div>
+      <!-- Description -->
+      <ng-template #elseEditDescriptionTemplate>
+        <p
+          (click)="changeChangers('description')"
+          class="w-100 bef bef-w-md-75per mx-auto text-start bef bef-textAlign-md-center"
+        >
+          <span [innerHTML]="evento.description | safeHtml"></span>
+          <svg
+            *ngIf="!!isEdit"
+            (click)="changeChangers('description')"
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-pencil"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"
+            />
+          </svg>
+        </p>
+      </ng-template>
+      <!-- Photos -->
+      <div *ngIf="!!evento.photos && !!evento.photos[0]">
+        <h3
+          class="fw-bold text-start bef bef-textAlign-md-center my-0 bef-mt-md-3rem bef-mb-md-1rem"
+        >
+          Fotos del evento
+        </h3>
+        <div *ngFor="let photo of evento.photos">
+          <img
+            [src]="url + 'file/' + photo.location | safeHtml : 'url'"
+            alt="{{ photo.title }}"
+            class="bef bef-w-clampSD200pxCOM50perCOM500pxED bef-hmx-20rem bef-object-cover bef-object-center bef-r-0_125rem"
+          />
+        </div>
+      </div>
+      <!-- Admin Options -->
+      <div *ngIf="!!isEdit">
+        <h3
+          class="fw-bold text-start bef bef-textAlign-md-center my-0 bef-mt-md-3rem bef-mb-md-1rem"
+        >
+          Tipos de ticket
+        </h3>
+        <generic-input
+          [placeholder]="evento.ticketTypes"
+          [thingFather]="evento"
+          [thing]="'ticketTypes'"
+          [type]="'select'"
+          [options]="ticketTypesOptions"
+          (clicked)="clickedDropdown($event)"
+        ></generic-input>
+        <div *ngIf="!!evento.operators && !!evento.operators[0]">
+          <h3
+            class="fw-bold text-start bef bef-textAlign-md-center my-0 bef-mt-md-3rem bef-mb-md-1rem"
+          >
+            Operadores
+          </h3>
+          <ul class="list-group list-group-flush bef bef-bg-mainBG bef-m-2rem">
+            <ng-container *ngFor="let ticket of evento.tickets">
+              <li
+                *ngIf="ticket.role !== 'asistente'"
+                class="list-group-item bef bef-bg-mainBG d-flex justify-content-between"
+              >
+                <ul class="list-group list-group-horizontal">
+                  <li class="list-group-item bef bef-fs-1_5rem">
+                    {{ ticket.user?.name }}
+                  </li>
+                  <li class="list-group-item bef bef-fs-1_5rem">
+                    {{ ticket.role }}
+                  </li>
+                </ul>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                  class="bi bi-pencil bef bef-cursor-pointer"
+                  viewBox="0 0 16 16"
+                  (click)="asignTicket2Edit(ticket)"
+                >
+                  <path
+                    d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"
+                  />
+                </svg>
+              </li>
+            </ng-container>
+          </ul>
+        </div>
+        <div *ngIf="!!evento.tickets && !!evento.tickets[0]">
+          <h3
+            class="fw-bold text-start bef bef-textAlign-md-center my-0 bef-mt-md-3rem bef-mb-md-1rem"
+          >
+            Agregar operador
+          </h3>
+          <generic-input
+            [placeholder]="'Busca al operador'"
+            [thingFather]="{ ticket: newTicket }"
+            [thing]="'ticket'"
+            [type]="'select-withSearcher'"
+            [options]="newOperatorsOptions"
+            (clicked)="clickedDropdown($event)"
+          ></generic-input>
+        </div>
+        <div *ngIf="!!evento.asistents && !!evento.asistents[0]">
+          <h3
+            class="fw-bold text-start bef bef-textAlign-md-center my-0 bef-mt-md-3rem bef-mb-md-1rem"
+          >
+            Asistentes
+          </h3>
+          <ul class="list-group list-group-flush bef bef-bg-mainBG bef-m-2rem">
+            <ng-container *ngFor="let ticket of evento.tickets">
+              <li
+                *ngIf="ticket.role === 'asistente'"
+                class="list-group-item bef bef-bg-mainBG d-flex justify-content-between"
+              >
+                <span class="bef bef-fs-1_5rem">
+                  {{ ticket.user?.name }}
+                </span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                  class="bi bi-pencil bef bef-cursor-pointer"
+                  viewBox="0 0 16 16"
+                  (click)="asignTicket2Edit(ticket)"
+                >
+                  <path
+                    d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"
+                  />
+                </svg>
+              </li>
+            </ng-container>
+          </ul>
+        </div>
+      </div>
+      <generic-button
+        *ngIf="!!isEdit"
+        [type]="'AddTicket'"
+        [classButton]="
+          'd-block mx-auto mat-elevation-z3 bef bef-my-2rem bef-btn-btnBG bef-text-mainBG bef-cursor-pointer bef-r-0_25rem bef-fs-1rem'
+        "
+        [customHtml]="'Invitar a nuevo asistente'"
+        [disabledClassButton]="
+          'd-block mx-auto bef bef-my-2rem bef-btn-btnBG__OPA__0_5 bef-text-mainBG bef-r-0_25rem bef-cursor-pointer bef-fs-1rem'
+        "
+        [tooltip]="'Invitar a nuevo asistente'"
+        [tooltipPosition]="'left'"
+        [showTooltip]="true"
+        [tooltipClass]="
+          'bef bef-r-1rem bef-text-mainBG bef-bg-btnBG bef-p-1rem'
+        "
+        [matButtonType]="'raised'"
+        (clicked)="modal = 'ticket'"
+      >
+      </generic-button>
+      <generic-button
+        *ngIf="!!isEdit"
+        [type]="'Editar'"
+        [classButton]="
+          'd-block mx-auto mat-elevation-z3 bef bef-my-2rem bef-btn-btnBG bef-text-mainBG bef-cursor-pointer bef-r-0_25rem bef-fs-1rem'
+        "
+        [customHtml]="evento._id === '' ? 'Crear evento' : 'Actualizar cambios'"
+        [disabledClassButton]="
+          'd-block mx-auto bef bef-my-2rem bef-btn-btnBG__OPA__0_5 bef-text-mainBG bef-r-0_25rem bef-cursor-pointer bef-fs-1rem'
+        "
+        [tooltip]="evento._id === '' ? 'Crear evento' : 'Actualizar cambios'"
+        [tooltipPosition]="'left'"
+        [showTooltip]="true"
+        [tooltipClass]="
+          'bef bef-r-1rem bef-text-mainBG bef-bg-btnBG bef-p-1rem'
+        "
+        [matButtonType]="'raised'"
+        [disabled]="!checkIfFormValid()"
+        (clicked)="onSubmit()"
+      >
+      </generic-button>
+    </div>
+  </mat-tab>
+  <mat-tab
+    *ngFor="let activity of evento.activities"
+    label="{{ activity.title }}"
+    labelClass="bef bef-bgFocus-resaltaBG bef-textFocus-mainBG bef-text-mainText bef-r-0_25rem"
+  >
+    <activity
+      [activity]="activity"
+      [ticketTypes]="evento.ticketTypes"
+      [isEdit]="isEdit"
+      [eventoId]="evento._id"
+      [token]="token"
+      [evento]="evento"
+      (activityEdited)="getData(evento._id)"
+    ></activity>
+  </mat-tab>
+  <mat-tab
+    *ngIf="!!isEdit && evento._id !== ''"
+    label="{{ newActivity.title }}"
+    labelClass="bef bef-bgFocus-resaltaBG bef-textFocus-mainBG bef-text-mainText bef-r-0_25rem"
+  >
+    <activity
+      [activity]="newActivity"
+      [ticketTypes]="evento.ticketTypes"
+      [isEdit]="isEdit"
+      [eventoId]="evento._id"
+      [token]="token"
+      [evento]="evento"
+      (activityEdited)="getData(evento._id)"
+    ></activity>
+  </mat-tab>
+</mat-tab-group>
+<!-- Modal -->
+<div
+  class="w-100 d-flex justify-content-center align-items-center position-fixed bef bef-h-100vh bef-z-100"
+  [ngClass]="{ 'top-100 start-100': !modal, 'top-0 start-0': !!modal }"
+>
+  <div
+    (click)="modal = undefined"
+    class="w-100 bef bef-h-100vh bef-bg-btnBG__OPA__0_25 position-absolute top-0 start-0"
+  ></div>
+  <div
+    class="w-50 bef bef-bg-mainBG bef-r-1rem bef-z-5 overflow-hidden mat-elevation-z20"
+    [ngSwitch]="modal"
+  >
+    <ng-container
+      *ngSwitchCase="'ticket'"
+      [ngTemplateOutlet]="ticketModal"
+    ></ng-container>
+    <div *ngSwitchCase="false"></div>
+    <ng-container *ngSwitchDefault></ng-container>
+  </div>
+</div>
+
+<ng-template #ticketModal>
+  <div
+    class="d-flex justify-content-between p-3 bef bef-bg-btnBG align-items-center"
+  >
+    <h4 class="m-0 bef bef-text-mainText">
+      {{
+        !newTicket._id
+          ? "Invitar nuevo asistente"
+          : "Editar " +
+            (newTicket.role === "asistente" ? "asistente" : "operador")
+      }}
+    </h4>
+    <button
+      type="button"
+      class="close btn bef bef-btn-alert bef-text-mainBG"
+      aria-label="Close"
+      (click)="(modal === undefined)"
+    >
+      <span aria-hidden="true">X</span>
+    </button>
+  </div>
+  <div class="p-3">
+    <!-- Nombre Ticket -->
+    <generic-input
+      class="bef bef-my-2rem bef-w-calcSD100per__MIN__3remED"
+      [labelTitle]="
+        'Nombre del ' +
+        (newTicket.role === 'asistente' ? 'asistente' : 'operador')
+      "
+      [placeholder]="
+        !!newTicket.user?.name
+          ? newTicket.user?.name
+          : 'Nombre del ' +
+            (newTicket.role === 'asistente' ? 'asistente' : 'operador')
+      "
+      [thingFather]="newTicket.user ? newTicket.user : newTicketUser"
+      [thing]="'name'"
+      [type]="'text'"
+      [disabled]="!!newTicket.user?._id"
+      [required]="true"
+      (changesInput)="changesInput($event)"
+    ></generic-input>
+    <!-- Email Ticket -->
+    <generic-input
+      class="bef bef-my-2rem bef-w-calcSD100per__MIN__3remED"
+      [labelTitle]="
+        'Email del ' +
+        (newTicket.role === 'asistente' ? 'asistente' : 'operador')
+      "
+      [placeholder]="
+        !!newTicket.user?.email
+          ? newTicket.user?.email
+          : 'Nombre del ' +
+            (newTicket.role === 'asistente' ? 'asistente' : 'operador')
+      "
+      [thingFather]="newTicket.user ? newTicket.user : newTicketUser"
+      [thing]="'email'"
+      [type]="'text'"
+      [disabled]="!!newTicket.user?._id"
+      [spans]="[
+        {
+          text:
+            'El email del ' +
+            (newTicket.role === 'asistente' ? 'asistente' : 'operador') +
+            ' es necesario.',
+          evalThing: 'required',
+          spanClass: 'd-block mx-auto fw-bold bef bef-text-danger bef-my-1rem'
+        }
+      ]"
+      [required]="true"
+      (changesInput)="changesInput($event)"
+    ></generic-input>
+    <!-- Role Ticket -->
+    <generic-input
+      class="bef bef-my-2rem"
+      [labelTitle]="
+        'Rol del ' + (newTicket.role === 'asistente' ? 'asistente' : 'operador')
+      "
+      [placeholder]="newTicket.role"
+      [thingFather]="newTicket"
+      [thing]="'role'"
+      [type]="'select'"
+      [options]="[
+        {
+          type: 'menuitem',
+          option: 'asistente',
+          click: 'TICKETROLE=asistente'
+        },
+        {
+          type: 'menuitem',
+          option: 'operador general',
+          click: 'TICKETROLE=operador general'
+        },
+        {
+          type: 'menuitem',
+          option: 'operador de actividad',
+          click: 'TICKETROLE=operador de actividad'
+        },
+        {
+          type: 'menuitem',
+          option: 'operador de asistentes',
+          click: 'TICKETROLE=operador de asistentes'
+        }
+      ]"
+      (clicked)="clickedDropdown($event)"
+    ></generic-input>
+    <!-- Ticket type -->
+    <generic-input
+      [labelTitle]="
+        'Tipo de ticket del ' +
+        (newTicket.role === 'asistente' ? 'asistente' : 'operador')
+      "
+      [placeholder]="newTicket.type"
+      [thingFather]="newTicket"
+      [thing]="'type'"
+      [type]="'select'"
+      [options]="ticketTypeOptions"
+      (clicked)="clickedDropdown($event)"
+    ></generic-input>
+    <!-- Activities -->
+    <ul class="list-group list-group-flush bef bef-bg-mainBG bef-m-2rem">
+      <ng-container *ngFor="let activity of newTicket.activitiesAdmin">
+        <li
+          class="list-group-item bef bef-bg-mainBG d-flex justify-content-between"
+        >
+          <span class="bef bef-fs-1_5rem">
+            {{ activity.title }}
+          </span>
+          <svg
+            (click)="activity2Ticket(activity)"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="currentColor"
+            class="bi bi-trash3-fill"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"
+            />
+          </svg>
+        </li>
+      </ng-container>
+    </ul>
+    <!-- ADD Activities -->
+    <generic-input
+      [labelTitle]="
+        'Agregar actividades al ' +
+        (newTicket.role === 'asistente' ? 'asistente' : 'operador')
+      "
+      class="bef bef-my-2rem"
+      [placeholder]="'Busca una actividad'"
+      [thingFather]="newTicket"
+      [thing]="'activitiesAdmin'"
+      [type]="'select-withSearcher'"
+      [options]="activities4Tickets"
+      (clicked)="clickedDropdown($event)"
+    ></generic-input>
+    <!-- Submit ticket -->
+    <generic-button
+      [type]="'EditarTicket'"
+      [classButton]="
+        'd-block mx-auto mat-elevation-z3 bef bef-my-2rem bef-btn-btnBG bef-text-mainBG bef-cursor-pointer bef-r-0_25rem bef-fs-1rem'
+      "
+      [customHtml]="
+        newTicket._id === '' ? 'Crear ticket' : 'Actualizar cambios'
+      "
+      [disabledClassButton]="
+        'd-block mx-auto bef bef-my-2rem bef-btn-btnBG__OPA__0_5 bef-text-mainBG bef-r-0_25rem bef-cursor-pointer bef-fs-1rem'
+      "
+      [tooltip]="newTicket._id === '' ? 'Crear ticket' : 'Actualizar cambios'"
+      [tooltipPosition]="'left'"
+      [showTooltip]="true"
+      [tooltipClass]="'bef bef-r-1rem bef-text-mainBG bef-bg-btnBG bef-p-1rem'"
+      [matButtonType]="'raised'"
+      [disabled]="!newTicket.user && newTicketUser.email === ''"
+      (clicked)="onSubmitTicket()"
+    >
+    </generic-button>
+  </div>
+</ng-template>
+<!-- Asistentes -->
+<!-- Options Buttons -->
+<div
+  *ngIf="!!showOptions"
+  (click)="showOptions = !showOptions"
+  class="position-fixed bef bef-t-0 bef-b-0 bef-w-100vw bef-h-100vh bef-bg-mainText__OPA__0_25 bef-z-9"
+></div>
+<div
+  class="position-fixed bef bef-b-2rem bef-e-2rem bef-z-10 d-flex flex-column align-items-end bef-g-1rem"
+>
+  <div *ngIf="!!showOptions" class="d-flex flex-column bef bef-g-1rem">
+    <div
+      class="d-flex flex-row justify-content-end align-items-center bef bef-g-1rem"
+      *ngFor="let option of options"
+    >
+      <span class="bef bef-text-mainBG">
+        {{ option.text }}
+      </span>
+      <generic-button
+        [type]="option.click"
+        [classButton]="
+          'd-block mat-elevation-z3 bef bef-btn-btnBG bef-text-mainBG bef-cursor-pointer bef-r-100per bef-fs-2_5rem bef-h-3rem bef-w-3rem'
+        "
+        [customHtml]="option.icon"
+        [disabledClassButton]="
+          'd-block bef bef-btn-btnBG__OPA__0_66 bef-text-mainBG bef-cursor-pointer bef-r-100per bef-fs-3rem bef-h-3_5rem bef-w-3_5rem'
+        "
+        [tooltip]="option.text"
+        [tooltipPosition]="'left'"
+        [showTooltip]="true"
+        [tooltipClass]="
+          'bef bef-r-1rem bef-text-mainBG bef-bg-btnBG bef-p-1rem'
+        "
+        [matButtonType]="'icon'"
+        (clicked)="clickedButton($event)"
+      >
+      </generic-button>
+    </div>
+  </div>
+  <generic-button
+    [type]="'Show Options'"
+    [classButton]="
+      'd-block mat-elevation-z3 bef bef-btn-btnBG bef-text-mainBG bef-cursor-pointer bef-r-100per bef-fs-3rem bef-h-3_5rem bef-w-3_5rem'
+    "
+    [customHtml]="'+'"
+    [disabledClassButton]="
+      'd-block bef bef-btn-btnBG__OPA__0_66 bef-text-mainBG bef-cursor-pointer bef-r-100per bef-fs-3rem bef-h-3_5rem bef-w-3_5rem'
+    "
+    [tooltip]="'Show Options'"
+    [tooltipPosition]="'left'"
+    [showTooltip]="true"
+    [tooltipClass]="'bef bef-r-1rem bef-text-mainBG bef-bg-btnBG bef-p-1rem'"
+    [matButtonType]="'icon'"
+    (clicked)="showOptions = !showOptions"
+  >
+  </generic-button>
+</div>

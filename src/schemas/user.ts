@@ -1,42 +1,52 @@
-import mongoose, { Schema } from "mongoose";
-import { IUserHistory } from "./userHistory";
+import mongoose, { PaginateModel, Schema } from "mongoose";
 import { ITicket } from "./ticket";
+const mongoosePaginate = require("mongoose-paginate");
 export interface IUser extends mongoose.Document {
-  role: "asistente" | "operador" | "administrador" | "tecnico";
+  name: string;
+  roleType: "basic" | "premium" | "special";
+  generalRole: "asistente" | "operador" | "administrador" | "técnico";
   tickets: ITicket[];
-  email: { type: String; unique: true };
-  password: String;
-  lastPassword: String;
-  passRec: String;
-  verified: Boolean;
-  uses: Number;
-  name: String;
+  email: string;
+  password?: string;
+  lastPassword?: string;
+  passRec: string;
+  verified: boolean;
+  uses: number;
   createAt: Date;
   changeDate: Date;
   changeUser: IUser;
-  changeType: String;
-  ver: Number;
-  isDeleted: Boolean;
-  changeHistory: IUserHistory;
+  changeType: string;
+  ver: number;
+  isDeleted: boolean;
+  changeHistory: IUser[];
 }
-export default mongoose.model<IUser>(
+export default mongoose.model<IUser, PaginateModel<IUser>>(
   "User",
   new mongoose.Schema({
-    role: "asistente" || "operador" || "administrador" || "tecnico",
+    name: String,
+    roleType: {
+      type: String,
+      enum: ["basic", "premium", "special"],
+      default: "basic",
+    },
+    generalRole: {
+      type: String,
+      enum: ["asistente", "operador", "administrador", "técnico"],
+      default: "asistente",
+    },
     tickets: [{ type: Schema.Types.ObjectId, ref: "Ticket" }],
-    email: String,
+    email: { type: String, unique: true },
     password: String,
     lastPassword: String,
     passRec: String,
     verified: Boolean,
     uses: Number,
-    name: String,
-    createAt: Date,
+    createAt: { type: Date, default: Date.now },
     changeDate: Date,
     changeUser: { type: Schema.Types.ObjectId, ref: "User" },
     changeType: String,
     ver: Number,
     isDeleted: Boolean,
-    changeHistory: { type: Schema.Types.ObjectId, ref: "UserHistory" },
-  })
+    changeHistory: [{ type: Schema.Types.ObjectId, ref: "UserHistory" }],
+  }).plugin(mongoosePaginate)
 );

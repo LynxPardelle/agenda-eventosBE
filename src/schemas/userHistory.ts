@@ -1,28 +1,20 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { PaginateModel, Schema } from "mongoose";
 import { IUser } from "./user";
-import { ITicket } from "./ticket";
-export interface IUserHistory extends mongoose.Document {
-  role: "asistente" | "operador" | "administrador" | "tecnico";
-  tickets: ITicket[];
-  email: { type: String; unique: true };
-  password: String;
-  lastPassword: String;
-  passRec: String;
-  verified: Boolean;
-  uses: Number;
-  name: String;
-  createAt: Date;
-  changeDate: Date;
-  changeUser: IUser;
-  changeType: String;
-  ver: Number;
-  isDeleted: Boolean;
-  changeHistory: IUserHistory;
-}
-export default mongoose.model<IUserHistory>(
+const mongoosePaginate = require("mongoose-paginate");
+export default mongoose.model<IUser, PaginateModel<IUser>>(
   "UserHistory",
   new mongoose.Schema({
-    role: "asistente" || "operador" || "administrador" || "tecnico",
+    name: String,
+    roleType: {
+      type: String,
+      enum: ["basic", "premium", "special"],
+      default: "basic",
+    },
+    generalRole: {
+      type: String,
+      enum: ["asistente", "operador", "administrador", "técnico"],
+      default: "asistente",
+    },
     tickets: [{ type: Schema.Types.ObjectId, ref: "Ticket" }],
     email: String,
     password: String,
@@ -30,13 +22,12 @@ export default mongoose.model<IUserHistory>(
     passRec: String,
     verified: Boolean,
     uses: Number,
-    name: String,
     createAt: Date,
     changeDate: Date,
     changeUser: { type: Schema.Types.ObjectId, ref: "User" },
     changeType: String,
     ver: Number,
     isDeleted: Boolean,
-    changeHistory: { type: Schema.Types.ObjectId, ref: "UserHistory" },
-  })
+    changeHistory: [{ type: Schema.Types.ObjectId, ref: "UserHistory" }],
+  }).plugin(mongoosePaginate)
 );

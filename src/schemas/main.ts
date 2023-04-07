@@ -1,29 +1,31 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { PaginateModel, Schema } from "mongoose";
 import { IUser } from "./user";
+import { IFile } from "./file";
+const mongoosePaginate = require("mongoose-paginate");
 export interface IMain extends mongoose.Document {
-  logo: String;
-  title: String;
-  welcome: String;
-  titleColor: String;
-  textColor: String;
-  linkColor: String;
-  bgColor: String;
-  errorMsg: String;
-  seoDesc: String;
-  seoTags: String;
-  seoImg: String;
+  logo: IFile;
+  title: string;
+  welcome: string;
+  titleColor: string;
+  textColor: string;
+  linkColor: string;
+  bgColor: string;
+  errorMsg: string;
+  seoDesc: string;
+  seoTags: string;
+  seoImg: string;
   createAt: Date;
   changeDate: Date;
   changeUser: IUser;
-  changeType: String;
-  ver: Number;
-  isDeleted: Boolean;
+  changeType: string;
+  ver: number;
+  isDeleted: boolean;
   changeHistory: IMain[];
 }
-export default mongoose.model<IMain>(
+export default mongoose.model<IMain, PaginateModel<IMain>>(
   "Main",
   new mongoose.Schema({
-    logo: String,
+    logo: { type: Schema.Types.ObjectId, ref: "File" },
     title: String,
     welcome: String,
     titleColor: String,
@@ -34,12 +36,12 @@ export default mongoose.model<IMain>(
     seoDesc: String,
     seoTags: String,
     seoImg: String,
-    createAt: Date,
+    createAt: { type: Date, default: Date.now },
     changeDate: Date,
     changeUser: { type: Schema.Types.ObjectId, ref: "User" },
     changeType: String,
     ver: Number,
     isDeleted: Boolean,
     changeHistory: [{ type: Schema.Types.ObjectId, ref: "MainHistory" }],
-  })
+  }).plugin(mongoosePaginate)
 );

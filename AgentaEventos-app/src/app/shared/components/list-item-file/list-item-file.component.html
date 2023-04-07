@@ -1,0 +1,19 @@
+<div
+  class="d-flex justify-content-between align-items-center mx-auto mat-elevation-z1 px-2 py-1 bef bef-wmn-11rem bef-wmx-200px bef-r-1rem">
+  <ng-container *ngIf="file.url && file.url !== ''; else elseTemplate">
+    <a href="{{ file.url }}" target="_blank" rel="noopener noreferrer" title="file.name" class="text-truncate"
+      matTooltip="{{file.name + ' desde el servidor.'}}">{{
+      file.name
+      }}</a>
+  </ng-container>
+  <ng-template #elseTemplate>
+    <p title="file.name" class="text-truncate m-0" matTooltip="{{file.name + ' aún no subido.'}}">{{
+      file.name
+      }}</p>
+  </ng-template>
+
+  <generic-button [type]="'remove-file-' + file.id" [classButton]="
+      'bef-p-0 bef-btn-mainBG bef-text-alert bef-rounded-100per bef-wmn-0 bef-w-2rem bef-h-2rem fw-bold'
+    " [customHtml]="'X'" [tooltip]=" ( !!file.url ? 'Cambiar': 'Remover') +' archivo'"
+    [showTooltip]="true" (clicked)="clicked.emit(file.id)"></generic-button>
+</div>

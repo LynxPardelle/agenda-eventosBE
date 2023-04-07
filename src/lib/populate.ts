@@ -1,3 +1,106 @@
-const populate = {};
+const populate = {
+  activity: [
+    "califications",
+    { path: "califications", populate: { path: "calificator" } },
+    "witness",
+    { path: "witness", populate: { path: "witness" } },
+    "changeUser",
+    "changeHistory",
+    { path: "changeHistory", populate: { path: "changeUser" } },
+  ],
+  calification: ["calificator"],
+  evento: [
+    "logo",
+    { path: "logo", populate: { path: "owner" } },
+    "headerImage",
+    { path: "headerImage", populate: { path: "owner" } },
+    "activities",
+    { path: "activities", populate: { path: "headerImage" } },
+    { path: "activities", populate: { path: "photos" } },
+    { path: "activities", populate: { path: "califications" } },
+    {
+      path: "activities",
+      populate: { path: "califications", populate: { path: "calificator" } },
+    },
+    { path: "activities", populate: { path: "witness" } },
+    {
+      path: "activities",
+      populate: { path: "witness", populate: { path: "witness" } },
+    },
+    { path: "activities", populate: { path: "changeUser" } },
+    { path: "activities", populate: { path: "changeHistory" } },
+    {
+      path: "activities",
+      populate: { path: "changeHistory", populate: { path: "changeUser" } },
+    },
+    "califications",
+    { path: "califications", populate: { path: "calificator" } },
+    "witness",
+    { path: "witness", populate: { path: "witness" } },
+    "asistents",
+    { path: "asistents", populate: { path: "tickets" } },
+    {
+      path: "asistents",
+      populate: { path: "tickets", populate: { path: "evento" } },
+    },
+    "operators",
+    { path: "operators", populate: { path: "tickets" } },
+    {
+      path: "operators",
+      populate: { path: "tickets", populate: { path: "evento" } },
+    },
+    "photos",
+    { path: "photos", populate: { path: "owner" } },
+    "tickets",
+    { path: "tickets", populate: { path: "user" } },
+    { path: "tickets", populate: { path: "activitiesAdmin" } },
+    "changeUser",
+    "changeHistory",
+    { path: "changeHistory", populate: { path: "changeUser" } },
+  ],
+  ticket: [
+    "evento",
+    { path: "evento", populate: { path: "headerImage" } },
+    { path: "evento", populate: { path: "asistents" } },
+    { path: "evento", populate: { path: "operators" } },
+    "user",
+    "activitiesAdmin",
+    {
+      path: "activitiesAdmin",
+      populate: { path: "headerImage" },
+    },
+    "changeUser",
+    "changeHistory",
+    { path: "changeHistory", populate: { path: "changeUser" } },
+  ],
+  user: [
+    "tickets",
+    { path: "tickets", populate: { path: "evento" } },
+    {
+      path: "tickets",
+      populate: { path: "evento", populate: { path: "headerImage" } },
+    },
+    {
+      path: "tickets",
+      populate: { path: "evento", populate: { path: "asistents" } },
+    },
+    {
+      path: "tickets",
+      populate: { path: "evento", populate: { path: "operators" } },
+    },
+    { path: "tickets", populate: { path: "activitiesAdmin" } },
+    {
+      path: "tickets",
+      populate: {
+        path: "activitiesAdmin",
+        populate: { path: "headerImage" },
+      },
+    },
+    "changeUser",
+    "changeHistory",
+    { path: "changeHistory", populate: { path: "changeUser" } },
+  ],
+  witness: ["witness"],
+};
 
 export default populate;

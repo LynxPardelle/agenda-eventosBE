@@ -1,0 +1,103 @@
+<ng-container *ngIf="files.length > 0" class="mb-3">
+  <ng-container *ngFor="let file of files">
+    <list-item-file [file]="{name: file.name, id: file.id}" (clicked)="removeFile($event)"></list-item-file>
+  </ng-container>
+</ng-container>
+<generic-button
+  *ngIf="uploaderBehaviour !== 'closeModal&ShowFiles' || files.length < 1 || (options.maxUploads && options.maxUploads > 1)"
+  [type]="'openModal'" [classButton]="classButton" [customHtml]="getHtml()"
+  [disabled]="disabled" [tooltip]="tooltip" [tooltipPosition]="tooltipPosition" [showTooltip]="showTooltip"
+  [tooltipClass]="tooltipClass" (clicked)="toggleModal()"></generic-button>
+<div class="w-100 d-flex justify-content-center align-items-center position-fixed bef bef-h-100vh bef-z-100"
+  [ngClass]="{'top-100 start-100': !showModal, 'top-0 start-0': !!showModal}">
+  <div (click)="toggleModal()"
+    class="w-100 bef bef-h-100vh bef-bg-btnBG__OPA__0_25 position-absolute top-0 start-0"></div>
+  <div class="w-50 bef bef-bg-mainBG bef-r-1rem bef-z-5 overflow-hidden mat-elevation-z20">
+    <div class="d-flex justify-content-between p-3 bef bef-bg-btnBG align-items-center">
+      <h4 class="m-0 bef bef-text-mainText">
+        Sube {{options.maxUploads && options.maxUploads > 1 ? 'los archivos' : 'el archivo'}}
+      </h4>
+      <button type="button" class="close btn bef bef-btn-alert bef-text-mainBG" aria-label="Close"
+        (click)="toggleModal();">
+        <span aria-hidden="true">X</span>
+      </button>
+    </div>
+    <div class="p-3">
+      <!-- File Upload -->
+      <ng-container *ngIf="doneUploading === false; else doneUploadingTemplate">
+        <div #dragNDropDiv *ngIf="!!dragNdropActive && (files.length < 1 || using !== 'selector')"
+          class="drop-container d-flex justify-content-center align-items-center bef bef-borderColor-mainBG bef-hmn-200px bef-borderStyle-dashed bef-borderWidth-0_25rem"
+          ngFileDrop [options]="options" (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput"
+          (dragover)="onDragOver($event)" (drop)="onFileChange($event)" [ngClass]="{ 'is-drop-over': dragOver }">
+          <h3>Suelta {{options.maxUploads && options.maxUploads > 1 ? 'los archivos' : 'el archivo'}} aquí.</h3>
+        </div>
+        <label #uploadSelector mat-raised *ngIf="files.length < 1 || using !== 'dragNDrop'"
+          class="btn bef-cursor-pointer text-center d-block mx-auto my-4 bef bef-btn-resaltaBG bef-text-mainBG">
+          <input type="file" ngFileSelect [options]="options" (uploadOutput)="onUploadOutput($event)"
+            (change)="onFileChange($event)" [uploadInput]="uploadInput"
+            [multiple]="options.maxUploads && options.maxUploads !== 1" />
+          <ng-container
+            *ngIf="!!dragNdropActive && (files.length < 1 || using !== 'selector'); else elseSeleccionaTemplate">
+            o escoge {{options.maxUploads && options.maxUploads > 1 ? 'los archivos' : 'el archivo'}}
+          </ng-container>
+          <ng-template #elseSeleccionaTemplate>
+            Selecciona {{options.maxUploads && options.maxUploads > 1 ? 'los archivos' : 'el archivo'}}
+          </ng-template>
+        </label>
+        <div *ngIf="files">
+          <div *ngFor="let file of files">
+            <p class="d-block mx-auto w-100 mb-3" *ngIf="
+                  file.nativeFile && file.nativeFile.name && file.nativeFile.size
+                ">
+              <span class="d-block mx-auto w-75">
+                {{ file.nativeFile.name }}
+                {{ file.nativeFile.size | sizeParser }}
+              </span>
+              <span class="d-block mx-auto w-25" *ngIf="fileProgress">
+                <span class="d-block mx-auto w-100" *ngFor="let fileProg of fileProgress">
+                  <span *ngIf="
+                        fileProg.progress &&
+                        fileProg.progress.data &&
+                        fileProg.progress.data.percentage &&
+                        fileProg.name == file.name
+                      " class="d-block mx-auto w-100 border rounded border-white">
+                    <span>
+                      {{ fileProg.progress.data.percentage }}
+                    </span>
+                  </span>
+                </span>
+              </span>
+            </p>
+          </div>
+        </div>
+        <p *ngFor="let mError of messagesErrorFiles" class="mb-4">
+          {{ mError }}
+        </p>
+        <button *ngIf="files.length > 0 && uploaderBehaviour === 'ShowFiles&ShowUploadButton'" mat-raised type="button"
+          class="btn text-center d-block mx-auto" (click)="startUpload()">
+          Empieza a subir {{options.maxUploads && options.maxUploads > 1 ? 'los archivos' : 'el archivo'}}.
+        </button>
+      </ng-container>
+      <!-- END: File Upload -->
+      <ng-template #doneUploadingTemplate class="mb-3">
+        <p>
+          {{options.maxUploads && options.maxUploads > 1 ? 'Los archivos se han' : 'El archivo se ha'}} subido
+          correctamente
+          <span *ngIf="messagesErrorFiles && messagesErrorFiles[0]">
+            excepto por {{options.maxUploads && options.maxUploads > 1 ? 'los archivos siguientes' : 'el archivo siguiente'}}:
+          </span>
+        </p>
+        <div *ngIf="messagesErrorFiles && messagesErrorFiles[0]">
+          <p *ngFor="let mError of messagesErrorFiles" class="mb-3">
+            {{ mError }}
+          </p>
+          <button class="btn d-block mx-auto" (click)="
+                changeDoneUploading(); dropMessageErrorFiles();toggleModal();
+              ">
+            Aceptar
+          </button>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

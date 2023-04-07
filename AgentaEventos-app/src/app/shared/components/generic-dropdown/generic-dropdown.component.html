@@ -1,0 +1,199 @@
+<label
+  *ngIf="!!labelTitle"
+  class="d-block text-start bef bef-text-mainText bef-mt-1rem {{
+    labelClasses
+  }}"
+>
+  {{ labelTitle }}
+</label>
+<div
+  class="btn-group bef d-block mx-auto"
+  [ngClass]="multiselect ? ' bef-wmn-250px ' : ' bef-w-250px '"
+  dropdown
+  container="body"
+>
+  <ng-container *ngIf="disabled === false; else elseDisabledTemplate">
+    <button
+      id="{{ buttonId }}"
+      dropdownToggle
+      type="button"
+      class="btn mat-elevation-z1 bef w-100 bef-lh-1 d-flex flex-wrap justify-content-between align-items-center"
+      [ngClass]="
+        (!withSearcher ? ' bef-p-1rem ' : ' bef-p-0 ') +
+        (disabled && !!disabledClassButton
+          ? disabledClassButton
+          : buttonClasses)
+      "
+      aria-controls="dropdownId"
+      (click)="clickedTitle.emit(placeholder)"
+      [disabled]="disabled"
+    >
+      <ng-container *ngIf="!withSearcher; else elseWithSearcherTemplate">
+        {{ placeholder }}
+      </ng-container>
+      <ng-template #elseWithSearcherTemplate>
+        <ng-container *ngIf="placeholder !== '' && multiselect">
+          <mat-chip-listbox #chipGrid aria-label="Placeholder">
+            <mat-chip
+              *ngFor="let pill of placeholder.toString().split(splitter)"
+              (removed)="
+                onClicked({
+                  type: 'menuitemMultiselect',
+                  option: pill,
+                  click: pill
+                })
+              "
+            >
+              {{ pill }}
+              <button matChipRemove [attr.aria-label]="'remove ' + pill">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip>
+          </mat-chip-listbox>
+        </ng-container>
+        <generic-input
+          class="bef bef-w-calcSD100per__MIN__2remED"
+          [placeholder]="placeholder.toString().replace(splitterRegEx, ',')"
+          [thingFather]="searcher"
+          [thing]="'search'"
+          [type]="!!multiselect ? 'textarea' : 'text'"
+          [inputClasses]="
+            'w-100 bef bef-h-2rem bef-bg-white bef-text-mainText bef-fs-1rem bef-bc-mainText__OPA__0_25 ' +
+            (!!multiselect
+              ? 'bef-p-0_5rem__0 bef-r-0'
+              : 'bef-p-0_5rem__1rem bef-r-1rem__0__0__1rem')
+          "
+          (changesInput)="InputReacher($event)"
+        ></generic-input>
+      </ng-template>
+      <ng-container *ngIf="!withSearcher; else elseIconTemplate">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="10"
+          height="10"
+          viewBox="0 0 15 12"
+        >
+          <path
+            id="Polygon_1"
+            data-name="Polygon 1"
+            d="M6.652,1.357a1,1,0,0,1,1.7,0l5.7,9.113A1,1,0,0,1,13.2,12H1.8a1,1,0,0,1-.848-1.53Z"
+            transform="translate(15 12) rotate(180)"
+            fill="#488dff"
+          />
+        </svg>
+      </ng-container>
+      <ng-template #elseIconTemplate>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="currentColor"
+          class="bi bi-search bef bef-m-0_5rem"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
+          />
+        </svg>
+      </ng-template>
+    </button>
+  </ng-container>
+  <ng-template #elseDisabledTemplate>
+    <button
+      id="{{ buttonId }}"
+      class="btn bef bef-btn-mainBG bef-fs-1rem bef-text-btnBG bef-p-1rem bef-r-1rem bef-w-100per bef-lh-1 d-flex justify-content-between align-items-center {{
+        buttonClasses
+      }}"
+      [disabled]="disabled"
+    >
+      {{ placeholder }}
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="10"
+        height="10"
+        viewBox="0 0 15 12"
+      >
+        <path
+          id="Polygon_1"
+          data-name="Polygon 1"
+          d="M6.652,1.357a1,1,0,0,1,1.7,0l5.7,9.113A1,1,0,0,1,13.2,12H1.8a1,1,0,0,1-.848-1.53Z"
+          transform="translate(15 12) rotate(180)"
+          fill="#488dff"
+        />
+      </svg>
+    </button>
+  </ng-template>
+  <ul
+    id="{{ dropdownId }}"
+    *dropdownMenu
+    class="list-group list-group-flush dropdown-menu bef bef-bg-mainBG bef-fs-1rem bef-text-mainText bef-p-1rem bef-r-0_5rem bef-w-{{
+      checkElementWidth(buttonId)
+    }}px bef-z-100"
+    role="menu"
+    aria-labelledby="buttonId"
+  >
+    <ng-container
+      *ngFor="let option of getOptions(); let last$ = last"
+      [exist]="last$"
+      (ngInit)="cssCreate()"
+    >
+      <ng-container [ngSwitch]="true">
+        <ng-container *ngSwitchCase="option.type.includes('menuitem')">
+          <li
+            *ngIf="
+              !placeholder.toString().includes(option.option) || !multiselect
+            "
+            class="list-group-item bef-cursor-pointer text-center bef bef-bg-mainBG"
+            [ngClass]="
+              disabled
+                ? listClasses +
+                  ' ' +
+                  (option.disabledClasses ? option.disabledClasses : '')
+                : listClasses +
+                  ' ' +
+                  (option.customClasses ? option.customClasses : '')
+            "
+            (click)="onClicked(option)"
+            role="menuitem"
+            [exist]="
+              !placeholder.toString().includes(option.option) || !multiselect
+            "
+            (ngInit)="cssCreate()"
+          >
+            {{ option.option }}
+          </li>
+        </ng-container>
+        <li
+          class="list-group-item bef text-center bef-bg-mainBG"
+          [ngClass]="
+            disabled
+              ? option.disabledClasses
+                ? option.disabledClasses
+                : ''
+              : option.customClasses
+              ? option.customClasses
+              : ''
+          "
+          *ngSwitchCase="option.type.includes('divider')"
+          class="divider dropdown-divider"
+        ></li>
+        <li
+          *ngSwitchDefault
+          (click)="onClicked(option)"
+          class="list-group-item bef text-center bef-bg-mainBG"
+          [ngClass]="
+            disabled
+              ? listClasses +
+                ' ' +
+                (option.disabledClasses ? option.disabledClasses : '')
+              : listClasses +
+                ' ' +
+                (option.customClasses ? option.customClasses : '')
+          "
+        >
+          {{ option.option }}
+        </li>
+      </ng-container>
+    </ng-container>
+  </ul>
+</div>

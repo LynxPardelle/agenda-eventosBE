@@ -1,45 +1,55 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { PaginateModel, Schema } from "mongoose";
 import { IUser } from "./user";
 import { IFile } from "./file";
-import { IWatch } from "./watch";
+import { IWitness } from "./witness";
+import { ICalification } from "./calification";
+const mongoosePaginate = require("mongoose-paginate");
 export interface IActivity extends mongoose.Document {
-  ticketTipe: String | Number;
-  title: String;
-  subtitle: String;
-  description: String;
+  ticketType: number;
+  title: string;
+  subtitle: string;
+  description: string;
   headerImage: IFile;
-  files: IFile[];
-  calification: Number;
-  watchs: IWatch[];
+  photos: IFile[];
+  califications: ICalification[];
+  witness: IWitness[];
   date: Date;
-  place: String;
+  place: string;
+  titleColor: string;
+  textColor: string;
+  linkColor: string;
+  bgColor: string;
   createAt: Date;
   changeDate: Date;
   changeUser: IUser;
-  changeType: String;
-  ver: Number;
-  isDeleted: Boolean;
-  changeHistory: IActivity;
+  changeType: string;
+  ver: number;
+  isDeleted: boolean;
+  changeHistory: IActivity[];
 }
-export default mongoose.model<IActivity>(
+export default mongoose.model<IActivity, PaginateModel<IActivity>>(
   "Activity",
   new mongoose.Schema({
-    ticketTipe: String || Number,
+    ticketType: Number,
     title: String,
     subtitle: String,
     description: String,
     headerImage: { type: Schema.Types.ObjectId, ref: "File" },
-    files: [{ type: Schema.Types.ObjectId, ref: "File" }],
-    calification: Number,
-    watchs: [{ type: Schema.Types.ObjectId, ref: "Watch" }],
+    photos: [{ type: Schema.Types.ObjectId, ref: "File" }],
+    califications: [{ type: Schema.Types.ObjectId, ref: "Calification" }],
+    witness: [{ type: Schema.Types.ObjectId, ref: "Witness" }],
     date: Date,
     place: String,
-    createAt: Date,
+    titleColor: String,
+    textColor: String,
+    linkColor: String,
+    bgColor: String,
+    createAt: { type: Date, default: Date.now },
     changeDate: Date,
     changeUser: { type: Schema.Types.ObjectId, ref: "User" },
     changeType: String,
     ver: Number,
     isDeleted: Boolean,
-    changeHistory: { type: Schema.Types.ObjectId, ref: "ActivityHistory" },
-  })
+    changeHistory: [{ type: Schema.Types.ObjectId, ref: "ActivityHistory" }],
+  }).plugin(mongoosePaginate)
 );

@@ -1,0 +1,84 @@
+<ng-container [ngSwitch]="type">
+  <ng-container *ngSwitchCase="'button'">
+    <generic-button [type]="config.type ? config.type : ''" [classButton]="config.classButton ? config.classButton : ''"
+      [customHtml]="customHtml(config.type ? config.type : 'button')"
+      [disabled]="config.disabled ? config.disabled : false" [tooltip]="config.tooltip ? config.tooltip : ''"
+      [tooltipPosition]="config.tooltipPosition ? config.tooltipPosition : 'below'"
+      [showTooltip]="config.showTooltip ? config.showTooltip : false"
+      [tooltipClass]="config.tooltipClass ? config.tooltipClass : ''" (clicked)="clicked.emit($event)"
+      (buttonId)="buttonId.emit($event)">
+    </generic-button>
+  </ng-container>
+  <ng-container *ngSwitchCase="'dropdown'"><generic-dropdown [labelTitle]="config.labelTitle ? config.labelTitle : ''"
+      [placeholder]="config.placeholder ? config.placeholder : ''"
+      [labelClasses]="config.labelClasses ? config.labelClasses : ''"
+      [buttonClasses]="config.buttonClasses ? config.buttonClasses : 'bef-btn-white bef-fs-1rem bef-text-btnBG bef-p-1rem bef-r-1rem'"
+      [listClasses]="config.listClasses ? config.listClasses : ''" [options]="config.options ? config.options : []"
+      [disabled]="config.disabled ? config.disabled : false"
+      [withSearcher]="config.withSearcher ? config.withSearcher : false" (clickedTitle)="
+        clicked.emit({
+          event: $event,
+          type: type ? type : ''
+        })
+      " (clicked)="
+        clicked.emit({
+          event: $event,
+          type: type ? type : ''
+        })
+      " (changesInput)="
+        changesInput.emit($event)
+      "></generic-dropdown></ng-container>
+  <ng-container *ngSwitchCase="'input'"><generic-input [labelTitle]="config.labelTitle ? config.labelTitle : ''"
+      [placeholder]="config.placeholder ? config.placeholder : ''"
+      [thingFather]="config.thingFather ? config.thingFather : { thing: '' }"
+      [thing]="config.thing ? config.thing : 'thing'" [type]="config.type ? config.type : ''"
+      [spans]="config.spans ? config.spans : []" [disabled]="config.disabled ? config.disabled : false"
+      [inputClasses]="config.inputClasses ? config.inputClasses : 'bef bef-bg-white bef-text-btnBG bef-fs-1rem border-0 bef-p-0_5rem__1rem bef-r-1rem bef-w-250px bef-mb-1rem'"
+      [inputDisabledClasses]="config.inputDisabledClasses ? config.inputDisabledClasses : ''"
+      [labelClasses]="config.labelClasses ? config.labelClasses : 'd-block text-start bef bef-text-btnBG bef-mt-1rem'"
+      [buttonClasses]="config.buttonClasses ? config.buttonClasses : ''"
+      [listClasses]="config.listClasses ? config.listClasses : ''" [options]="config.options ? config.options : []"
+      [disabledClassButton]="config.disabledClassButton ? config.disabledClassButton : ''" (clickedTitle)="
+        clicked.emit({
+          event: $event,
+          type: type ? type : ''
+        })
+      " (clicked)="
+        clicked.emit({
+          event: $event,
+          type: type ? type : ''
+        })
+      " (changesInput)="
+        changesInput.emit({
+          event: $event,
+          thingFather: config.thingFather ? config.thingFather : { thing: '' },
+          thing: config.thing ? config.thing : 'thing'
+        })
+      "></generic-input></ng-container>
+  <ng-container *ngSwitchCase="'uploadFile'">
+    <ng-container *ngIf="!!config.uploadNew; else elseShowFileTemplate">
+      <file-uploader [uploadInputConfig]="
+          config.uploadInputConfig ? config.uploadInputConfig : {type: 'uploadAll'}
+        " [options]="config.options ? config.options : {concurrency: 1}" [uploadSubject]="uploadSubject"
+        [uploaderId]="config.uploaderId ? config.uploaderId : undefined" [uploaderBehaviour]="
+          config.uploaderBehaviour ? config.uploaderBehaviour : 'closeModal&ShowFiles'
+        " [dragNdropActive]="config.dragNdropActive ? config.dragNdropActive : false"
+        [classButton]="config.classButton ? config.classButton : 'd-block mx-auto bef-bg-resaltaBG bef-text-mainBG bef-wmn-11rem bef-r-1rem bef-px-1rem mat-elevation-z1'"
+        [customHtml]="config.customHtml ? config.customHtml : 'Subir'"
+        [disabled]="config.disabled ? config.disabled : false"
+        [tooltip]="config.tooltip ? config.tooltip : 'Subir archivos'" [tooltipPosition]="
+          config.tooltipPosition ? config.tooltipPosition : 'below'
+        " [tooltipClass]="config.tooltipClass ? config.tooltipClass : ''"
+        [showTooltip]="config.showTooltip ? config.showTooltip : false"
+        (recoverThing)="recoverThing.emit($event)"></file-uploader>
+    </ng-container>
+    <ng-template #elseShowFileTemplate>
+      <list-item-file [file]="{ name: config.name, id: config.id, url: config.url }"
+        (clicked)="newUploader(); recoverThing.emit({id: $event, type: 'list-item-file'})"></list-item-file>
+    </ng-template>
+  </ng-container>
+  <ng-container *ngSwitchDefault>
+    <span [innerHTML]="thing | safeHtml" [exist]="true" (ngInit)="cssCreate()">
+    </span>
+  </ng-container>
+</ng-container>
