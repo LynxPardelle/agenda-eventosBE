@@ -3,7 +3,7 @@
     *ngIf="!!activity.headerImage"
     [src]="url + 'file/' + activity.headerImage.location | safeHtml : 'url'"
     alt="{{ activity.headerImage.title }}"
-    class="bef bef-w-100per bef-hmx-20rem bef-object-cover bef-object-center bef-r-0_125rem"
+    class="bef bef-w-100per bef-hmx-20rem bef-objectFit-cover bef-objectPosition-center bef-r-0_125rem"
   />
   <ng-container *ngIf="!!isEdit">
     <file-uploader
@@ -288,7 +288,7 @@
       <img
         [src]="url + 'file/' + photo.location | safeHtml : 'url'"
         alt="{{ photo.title }}"
-        class="bef bef-w-clampSD200pxCOM50perCOM500pxED bef-hmx-20rem bef-object-cover bef-object-center bef-r-0_125rem"
+        class="bef bef-w-clampSD200pxCOM50perCOM500pxED bef-hmx-20rem bef-objectFit-cover bef-objectPosition-center bef-r-0_125rem"
       />
     </div>
   </div>
