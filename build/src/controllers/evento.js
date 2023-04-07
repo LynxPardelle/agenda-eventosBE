@@ -1281,14 +1281,14 @@ exports.EventoController = {
                 }
                 if (!eventoStored.tickets)
                     eventoStored.tickets = [];
-                eventoStored.tickets.push(newTicket.ticket._id);
+                eventoStored.tickets.push(newTicket._id);
                 const eventoUpdated = yield exports.EventoController.DoUpdateEvento(eventoStored);
                 if (!eventoUpdated) {
                     throw new Error("No se guardó el evento.");
                 }
                 if (!userAdmin.tickets)
                     userAdmin.tickets = [];
-                userAdmin.tickets.push(newTicket.ticket._id);
+                userAdmin.tickets.push(newTicket._id);
                 userAdmin.verified = true;
                 userAdmin.changeDate = new Date();
                 userAdmin.changeUser = userAdmin._id;
