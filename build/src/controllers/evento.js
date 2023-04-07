@@ -1003,9 +1003,12 @@ exports.EventoController = {
         });
     },
     getFile(req, res) {
-        const filePath = path_1.default.join(__dirname, "../../uploads/evento/", req.params.file);
+        let filePath = path_1.default.join(__dirname, "../../uploads/evento/", req.params.file);
         if (!(0, fs_1.existsSync)(filePath)) {
-            return res.status(404).send({ error: "File not found" });
+            filePath = path_1.default.join(__dirname, "./uploads/evento/", req.params.file);
+            if (!(0, fs_1.existsSync)(filePath)) {
+                return res.status(404).send({ error: "File not found" });
+            }
         }
         return res.sendFile(filePath);
     },
