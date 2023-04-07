@@ -1301,30 +1301,29 @@ export const EventoController: any = {
       if (!eventoStored) {
         throw new Error("No se guardó el evento.");
       }
-      const newTicket: { ticket: ITicket } | null =
-        await EventoController.DoCreateTicket(
-          {
-            type: evento.ticketTypes,
-            evento: eventoStored._id,
-            user: userAdmin._id,
-            role: "operador general",
-            activitiesAdmin: eventoStored.activities
-              ? eventoStored.activities
-              : [],
-          },
-          changer
-        );
+      const newTicket: ITicket | null = await EventoController.DoCreateTicket(
+        {
+          type: evento.ticketTypes,
+          evento: eventoStored._id,
+          user: userAdmin._id,
+          role: "operador general",
+          activitiesAdmin: eventoStored.activities
+            ? eventoStored.activities
+            : [],
+        },
+        changer
+      );
       if (!newTicket) {
         throw new Error("No se guardó el ticket.");
       }
       if (!eventoStored.tickets) eventoStored.tickets = [];
-      eventoStored.tickets.push(newTicket.ticket._id);
+      eventoStored.tickets.push(newTicket._id);
       const eventoUpdated = await EventoController.DoUpdateEvento(eventoStored);
       if (!eventoUpdated) {
         throw new Error("No se guardó el evento.");
       }
       if (!userAdmin.tickets) userAdmin.tickets = [];
-      userAdmin.tickets.push(newTicket.ticket._id);
+      userAdmin.tickets.push(newTicket._id);
       userAdmin.verified = true;
       userAdmin.changeDate = new Date();
       userAdmin.changeUser = userAdmin._id;
