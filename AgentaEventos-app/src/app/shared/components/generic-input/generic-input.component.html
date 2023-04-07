@@ -133,16 +133,22 @@
           ? readonlyClasses
           : inputClasses
       "
-      type="date"
+      type="text"
       name="{{ thing }}"
       #[thing]="ngModel"
       [(ngModel)]="thingFather[thing]"
       (ngModelChange)="writtingInInput($event)"
-      placeholder="{{ thingFather[thing] | date : 'dd/MM/yyyy' }}"
-      value="{{ thingFather[thing] | date : 'dd/MM/yyyy' }}"
+      placeholder="{{ thingFather[thing] | date : 'dd/MM/YYYY' }}"
+      value="{{ thingFather[thing] | date : 'dd/MM/YYYY' }}"
       [disabled]="disabled"
       [readOnly]="readonly"
       [required]="required"
+      bsDatepicker
+      [bsConfig]="{
+        rangeInputFormat: 'dd/MM/YYYY',
+        dateInputFormat: 'dd/MM/YYYY',
+        showWeekNumbers: false
+      }"
     />
   </ng-container>
   <ng-container *ngSwitchCase="'date&&time'">
@@ -155,16 +161,23 @@
           ? readonlyClasses
           : inputClasses
       "
-      type="date"
+      type="text"
       name="{{ thing }}"
       #[thing]="ngModel"
       [(ngModel)]="thingFather[thing]"
       (ngModelChange)="writtingInInput($event)"
-      placeholder="{{ thingFather[thing] | date : 'dd/MM/yyyy HH:mm' }}"
-      value="{{ thingFather[thing] | date : 'dd/MM/yyyy' }}"
+      placeholder="{{ thingFather[thing] | date : 'dd/MM/YYYY HH:mm a' }}"
+      value="{{ thingFather[thing] | date : 'dd/MM/YYYY HH:mm a' }}"
       [disabled]="disabled"
       [readOnly]="readonly"
       [required]="required"
+      bsDatepicker
+      [bsConfig]="{
+        withTimepicker: true,
+        rangeInputFormat: 'dd/MM/YYYY HH:mm a',
+        dateInputFormat: 'dd/MM/YYYY HH:mm a',
+        showWeekNumbers: false
+      }"
     />
   </ng-container>
   <ng-container *ngSwitchDefault>

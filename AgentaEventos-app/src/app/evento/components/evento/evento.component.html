@@ -227,7 +227,7 @@
         class="d-flex w-100 bef bef-w-md-75per mx-auto my-0 bef-my-md-3rem justify-content-start bef-justifyContent-md-center align-items-center"
       >
         <mat-chip class="bef bef-bg-resaltaBG bef-text-mainBG">
-          {{ evento.date | date : "dd/MM/yyyy hh:mm" }}
+          {{ evento.date | date : "dd/MM/YYYY HH:mm a" }}
         </mat-chip>
         <mat-chip class="bef bef-bg-resaltaBG bef-text-mainBG">
           {{ evento.place }}
@@ -238,7 +238,7 @@
         <generic-input
           [inputClasses]="'form-control bef bef-mb-2rem'"
           [labelTitle]="'Fecha del evento'"
-          [placeholder]="evento.date | date : 'dd/MM/yyyy hh:mm'"
+          [placeholder]="evento.date | date : 'dd/MM/YYYY HH:mm a'"
           [thingFather]="evento"
           [thing]="'date'"
           [type]="'date&&time'"

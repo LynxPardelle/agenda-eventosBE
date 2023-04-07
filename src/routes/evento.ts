@@ -25,10 +25,10 @@ router.post(
   EventoController.createTicket
 );
 /* Read */
-router.get("/evento/:id", EventoController.getEvento);
+router.get("/evento/:id", md_optional_auth, EventoController.getEvento);
 router.get(
   "/eventos/:page?/:limit?/:sort?/:type?/:search?",
-  [md_auth, md_role.isOperador],
+  md_optional_auth,
   EventoController.getEventos
 );
 router.get(

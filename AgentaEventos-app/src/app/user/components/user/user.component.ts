@@ -145,7 +145,7 @@ export class UserComponent implements OnInit {
       },
       error: (err) => {
         this._sharedService.consoleParser({ thing: err, type: 'error' });
-        this._router.navigate(['**']);
+        this._router.navigate(['/user/user']);
       },
     });
   }

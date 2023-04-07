@@ -132,7 +132,6 @@ export class EventoComponent implements OnInit {
     this.store.select(IdentitySelector);
   public lockeds: { [key: string]: boolean } = {
     title: true,
-    ticketType: this.evento.ticketTypes > 0,
   };
   public ticketTypesOptions: IOptionDropdown[] = this.getTicketTypesOptions();
   public newOperatorsOptions: IOptionDropdown[] = this.getOperatorsOptions();
@@ -236,7 +235,6 @@ export class EventoComponent implements OnInit {
   }
   configData() {
     if (this.evento.title !== '') this.lockeds['title'] = false;
-    if (this.evento.ticketTypes > 0) this.lockeds['ticketType'] = false;
     this.newActivity = new Activity(
       '', // _id: string,
       0, // ticketType: number,

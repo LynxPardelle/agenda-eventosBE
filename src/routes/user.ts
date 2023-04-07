@@ -14,11 +14,7 @@ router.get("/datos-autor", UserController.datosAutor);
 /* Create */
 router.post("/user", md_optional_auth, UserController.createUser);
 /* Read */
-router.get(
-  "/user/:id/:filter",
-  [md_auth, md_role.isOperador],
-  UserController.getUser
-);
+router.get("/user/:id/:filter", md_optional_auth, UserController.getUser);
 router.get(
   "/users/:page?/:limit?/:sort?/:type?/:search?",
   [md_auth, md_role.isOperador],
