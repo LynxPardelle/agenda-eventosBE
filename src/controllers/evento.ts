@@ -1307,7 +1307,7 @@ export const EventoController: any = {
             type: evento.ticketTypes,
             evento: eventoStored._id,
             user: userAdmin._id,
-            role: "administrador",
+            role: "operador general",
             activitiesAdmin: eventoStored.activities
               ? eventoStored.activities
               : [],
