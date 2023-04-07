@@ -42,8 +42,8 @@ router.post("/calification/:type/:id", authenticated_1.ensureAuth, evento_1.Even
 router.post("/evento", authenticated_1.ensureAuth, evento_1.EventoController.createEvento);
 router.post("/ticket/:userId/:eventoId", authenticated_1.ensureAuth, evento_1.EventoController.createTicket);
 /* Read */
-router.get("/evento/:id", evento_1.EventoController.getEvento);
-router.get("/eventos/:page?/:limit?/:sort?/:type?/:search?", [authenticated_1.ensureAuth, md_role.isOperador], evento_1.EventoController.getEventos);
+router.get("/evento/:id", authenticated_1.optionalAuth, evento_1.EventoController.getEvento);
+router.get("/eventos/:page?/:limit?/:sort?/:type?/:search?", authenticated_1.optionalAuth, evento_1.EventoController.getEventos);
 router.get("/activity/:id/:firstOpen?", authenticated_1.optionalAuth, evento_1.EventoController.viewActivity);
 /* Update & Delete */
 router.put("/activity/:type", [authenticated_1.ensureAuth, md_role.isOperador], evento_1.EventoController.updateActivity);

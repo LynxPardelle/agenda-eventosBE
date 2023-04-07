@@ -39,7 +39,7 @@ router.get("/datos-autor", user_1.UserController.datosAutor);
 /* Create */
 router.post("/user", authenticated_1.optionalAuth, user_1.UserController.createUser);
 /* Read */
-router.get("/user/:id/:filter", [authenticated_1.ensureAuth, md_role.isOperador], user_1.UserController.getUser);
+router.get("/user/:id/:filter", authenticated_1.optionalAuth, user_1.UserController.getUser);
 router.get("/users/:page?/:limit?/:sort?/:type?/:search?", [authenticated_1.ensureAuth, md_role.isOperador], user_1.UserController.getUsers);
 /* Update & Delete */
 router.put("/user/:type", [authenticated_1.ensureAuth, md_role.isOperador], user_1.UserController.updateUser);
