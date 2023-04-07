@@ -1041,13 +1041,19 @@ export const EventoController: any = {
   getFile(req: Request, res: Response) {
     let filePath = path.join(
       __dirname,
-      "../../uploads/evento/",
+      "../../../uploads/evento/",
       req.params.file
     );
     if (!existsSync(filePath)) {
-      filePath = path.join(__dirname, "./uploads/evento/", req.params.file);
+      filePath = path.join(__dirname, "../../uploads/evento/", req.params.file);
       if (!existsSync(filePath)) {
-        return res.status(404).send({ error: "File not found" });
+        filePath = path.join(__dirname, "../uploads/evento/", req.params.file);
+        if (!existsSync(filePath)) {
+          filePath = path.join(__dirname, "./uploads/evento/", req.params.file);
+          if (!existsSync(filePath)) {
+            return res.status(404).send({ error: "File not found" });
+          }
+        }
       }
     }
     return res.sendFile(filePath);
