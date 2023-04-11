@@ -139,13 +139,6 @@ export class SharedService {
     return date;
   }
 
-  ngClassConverter(newClasses: string): any {
-    let ngClassParsed: any = {};
-    newClasses.split(' ').forEach((c) => (ngClassParsed[c.toString()] = true));
-    this.cssCreate();
-    return ngClassParsed;
-  }
-
   getHTML(type: string): string {
     switch (type) {
       case 'edit':

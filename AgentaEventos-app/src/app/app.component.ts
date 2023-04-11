@@ -20,6 +20,8 @@ import { LoadConfig } from './state/actions/config.actions';
 import { LoadMain } from './state/actions/main.actions';
 /* Bef */
 import { NgxBootstrapExpandedFeaturesService } from 'ngx-bootstrap-expanded-features';
+/* Libs */
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -41,6 +43,17 @@ export class AppComponent implements OnInit, OnDestroy {
     this.config$ = this.store.select(ConfigSelector);
     this.sesion$ = this.store.select(SesionSelector);
     this.main$ = this.store.select(MainSelector);
+    this._befService.pushColors({
+      logo: "url('../../favicon.ico')",
+      mainText: '#1e1e1e',
+      mainBG: '#F5FAFF',
+      btnBG: '#00254D',
+      resaltaBG: '#7749F8',
+      // mainText: '#F5e7a0',
+      // mainBG: '#1e3e5e',
+      // btnBG: '#55e7a0',
+      // resaltaBG: '#f5a700',
+    });
   }
 
   ngOnInit(): void {
@@ -51,19 +64,13 @@ export class AppComponent implements OnInit, OnDestroy {
     this.store.dispatch(LoadSesion());
     this.store.dispatch(LoadConfig());
     this.store.dispatch(LoadMain());
-    this._befService.pushColors({
-      logo: "url('../../favicon.ico')",
-      //logo: "url('')",
-      mainText: '#1e1e1e',
-      mainBG: '#F5FAFF',
-      btnBG: '#00254D',
-      resaltaBG: '#7749F8',
-      // mainText: '#F5e7a0',
-      // mainBG: '#1e3e5e',
-      // btnBG: '#55e7a0',
-      // resaltaBG: '#f5a700',
-    });
-    this._befService.updateClasses(['bef-btn-btnBG', 'bef-r-0_5rem']);
+    this._befService.updateClasses([
+      'bef-btn-btnBG',
+      'bef-r-0_5rem',
+      'bef-w-250px',
+    ]);
+    this._befService.setTimeBetweenReCreate(100);
+    this._befService.setTimeLastTimeAskedPlus(250);
     this.cssCreate();
   }
 
@@ -74,18 +81,15 @@ export class AppComponent implements OnInit, OnDestroy {
   getSesion() {
     this.sesion$.pipe(takeUntil(this._unsubscribeAll)).subscribe({
       next: (s) => {
-        /* if (
-          (!s?.identity || !s?.token) &&
-          !this._router.url.includes('/auth/')
-        ) {
-          this._router.navigate(['/auth/login']);
-        }
-        */
-        // this._sharedService.consoleLog(this._route.url);
         this.cssCreate();
       },
       error: (e) => {
         this._sharedService.consoleLog(e, null, 'padding: 1rem;', 'error');
+        Swal.fire(
+          'Error al cargar la información del usuario',
+          e.toString(),
+          'error'
+        );
       },
     });
   }
@@ -100,6 +104,11 @@ export class AppComponent implements OnInit, OnDestroy {
       },
       error: (e) => {
         this._sharedService.consoleLog(e, null, 'padding: 1rem;', 'error');
+        Swal.fire(
+          'Error al cargar la configuración del sitio',
+          e.toString(),
+          'error'
+        );
       },
     });
   }
@@ -114,11 +123,16 @@ export class AppComponent implements OnInit, OnDestroy {
       },
       error: (e) => {
         this._sharedService.consoleLog(e, null, 'padding: 1rem;', 'error');
+        Swal.fire(
+          'Error al cargar la información del sitio',
+          e.toString(),
+          'error'
+        );
       },
     });
   }
 
   cssCreate(): void {
-    this._befService.cssCreate();
+    this._sharedService.cssCreate();
   }
 }

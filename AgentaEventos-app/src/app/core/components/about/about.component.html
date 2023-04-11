@@ -29,7 +29,7 @@
   <div class="bef bef-w-2_5rem bef-h-2_5rem"></div>
 </header>
 <h1 class="text-center fw-bold">Agenda de Eventos App</h1>
-<section>
+<section class="bef bef-mb-5rem">
   <h2 class="text-center mt-3">Acerca de nosotros</h2>
   <p class="d-block mx-auto bef bef-w-clampSD250pxCOM75perCOM750pxED">
     Este es un proyecto que esta en modo prueba, servirá para crear eventos con
@@ -70,7 +70,7 @@
       aplicación para gestionar eventos fue de Alex, gracias.
     </li>
   </ul>
-  <h2 class="text-center mt-3">Cuándo saldrá una versión estable?</h2>
+  <h2 class="text-center mt-3">¿Cuándo saldrá una versión estable?</h2>
   <p class="d-block mx-auto bef bef-w-clampSD250pxCOM75perCOM750pxED">
     Por ahora se va a probar y mostrar el mvp, además se tienen que resolver
     algunos problemas de memoria y sería deseable sacar alguna manera de
@@ -80,6 +80,13 @@
     puedes ponerte en contacto con Lynx Pardelle o con Pamela Betancourt para
     platicar de negocios.
   </p>
+  <h2 class="text-center mt-3">Versiones</h2>
+  <div *ngFor="let ver of changes">
+    <h2 class="text-center mt-3">{{ ver.title }} - {{ ver.date }}</h2>
+    <p class="d-block mx-auto bef bef-w-clampSD250pxCOM75perCOM750pxED">
+      {{ ver.description }}
+    </p>
+  </div>
 </section>
 <!-- Footer -->
 <footer
@@ -89,21 +96,21 @@
     href="https://www.figma.com/file/Cqcq8XAfSr9u5urofwRqHj/AgendaProject?node-id=181%3A3592&t=trFYYlXMWLd3dkAD-1"
     target="_blank"
     rel="noopener noreferrer"
-    class="text-decoration-none bef bef-text-resaltaBG"
+    class="text-decoration-none bef bef-text-btnBG"
     >Prototipo en Figma</a
   >
   <a
     href="https://lynxpardelle.com/"
     target="_blank"
     rel="noopener noreferrer"
-    class="text-decoration-none bef bef-text-resaltaBG"
+    class="text-decoration-none bef bef-text-btnBG"
     >Portafolio de Lynx Pardelle</a
   >
   <a
     href="https://www.linkedin.com/in/pamela-betancourt-r/"
     target="_blank"
     rel="noopener noreferrer"
-    class="text-decoration-none bef bef-text-resaltaBG"
+    class="text-decoration-none bef bef-text-btnBG"
     >LinkedIn de Pamela Betancourt</a
   >
 </footer>

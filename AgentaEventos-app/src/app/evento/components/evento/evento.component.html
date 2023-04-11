@@ -49,7 +49,8 @@
 <mat-tab-group [dynamicHeight]="true" [disableRipple]="true">
   <mat-tab
     label="{{ evento.title }}"
-    labelClass="bef bef-bgFocus-resaltaBG bef-textFocus-mainBG bef-text-mainText bef-r-0_25rem"
+    labelClass="be bef-bgFocus-resaltaBG bef-textFocus-mainBG bef-text-mainText bef-r-0_25rem"
+    (click)="cssCreate()"
   >
     <div class="mx-auto bef bef-w-calcSD100per__MIN__2remED bef-hmn-100vh">
       <img
@@ -58,7 +59,7 @@
         alt="{{ evento.headerImage.title }}"
         class="bef bef-w-100per bef-hmx-20rem bef-objectFit-cover bef-objectPosition-center bef-r-0_125rem"
       />
-      <ng-container *ngIf="!!isEdit">
+      <ng-container *ngIf="!!isEdit && evento._id !== ''">
         <file-uploader
           [uploadInputConfig]="{
             type: 'uploadAll',
@@ -84,6 +85,7 @@
           [dragNdropActive]="true"
           [customHtml]="'Subir imagen de cabecera'"
           [tooltip]="'Subir archivo de cabecera del evento'"
+          (recoverThing)="getData(evento._id)"
         ></file-uploader>
       </ng-container>
       <!-- Title Edit -->
@@ -504,6 +506,7 @@
     *ngFor="let activity of evento.activities"
     label="{{ activity.title }}"
     labelClass="bef bef-bgFocus-resaltaBG bef-textFocus-mainBG bef-text-mainText bef-r-0_25rem"
+    (click)="cssCreate()"
   >
     <activity
       [activity]="activity"
@@ -519,6 +522,7 @@
     *ngIf="!!isEdit && evento._id !== ''"
     label="{{ newActivity.title }}"
     labelClass="bef bef-bgFocus-resaltaBG bef-textFocus-mainBG bef-text-mainText bef-r-0_25rem"
+    (click)="cssCreate()"
   >
     <activity
       [activity]="newActivity"
@@ -745,35 +749,38 @@
   class="position-fixed bef bef-b-2rem bef-e-2rem bef-z-10 d-flex flex-column align-items-end bef-g-1rem"
 >
   <div *ngIf="!!showOptions" class="d-flex flex-column bef bef-g-1rem">
-    <div
-      class="d-flex flex-row justify-content-end align-items-center bef bef-g-1rem"
-      *ngFor="let option of options"
-    >
-      <span class="bef bef-text-mainBG">
-        {{ option.text }}
-      </span>
-      <generic-button
-        [type]="option.click"
-        [classButton]="
-          'd-block mat-elevation-z3 bef bef-btn-btnBG bef-text-mainBG bef-cursor-pointer bef-r-100per bef-fs-2_5rem bef-h-3rem bef-w-3rem'
-        "
-        [customHtml]="option.icon"
-        [disabledClassButton]="
-          'd-block bef bef-btn-btnBG__OPA__0_66 bef-text-mainBG bef-cursor-pointer bef-r-100per bef-fs-3rem bef-h-3_5rem bef-w-3_5rem'
-        "
-        [tooltip]="option.text"
-        [tooltipPosition]="'left'"
-        [showTooltip]="true"
-        [tooltipClass]="
-          'bef bef-r-1rem bef-text-mainBG bef-bg-btnBG bef-p-1rem'
-        "
-        [matButtonType]="'icon'"
-        (clicked)="clickedButton($event)"
+    <ng-container *ngFor="let option of options">
+      <div
+        *ngIf="!!option.show"
+        class="d-flex flex-row justify-content-end align-items-center bef bef-g-1rem"
       >
-      </generic-button>
-    </div>
+        <span class="bef bef-text-mainBG">
+          {{ option.text }}
+        </span>
+        <generic-button
+          [type]="option.click"
+          [classButton]="
+            'd-block mat-elevation-z3 bef bef-btn-btnBG bef-text-mainBG bef-cursor-pointer bef-r-100per bef-fs-2_5rem bef-h-3rem bef-w-3rem'
+          "
+          [customHtml]="option.icon"
+          [disabledClassButton]="
+            'd-block bef bef-btn-btnBG__OPA__0_66 bef-text-mainBG bef-cursor-pointer bef-r-100per bef-fs-3rem bef-h-3_5rem bef-w-3_5rem'
+          "
+          [tooltip]="option.text"
+          [tooltipPosition]="'left'"
+          [showTooltip]="true"
+          [tooltipClass]="
+            'bef bef-r-1rem bef-text-mainBG bef-bg-btnBG bef-p-1rem'
+          "
+          [matButtonType]="'icon'"
+          (clicked)="clickedButton($event)"
+        >
+        </generic-button>
+      </div>
+    </ng-container>
   </div>
   <generic-button
+    *ngIf="checkForOptionsCanShow()"
     [type]="'Show Options'"
     [classButton]="
       'd-block mat-elevation-z3 bef bef-btn-btnBG bef-text-mainBG bef-cursor-pointer bef-r-100per bef-fs-3rem bef-h-3_5rem bef-w-3_5rem'
@@ -787,7 +794,7 @@
     [showTooltip]="true"
     [tooltipClass]="'bef bef-r-1rem bef-text-mainBG bef-bg-btnBG bef-p-1rem'"
     [matButtonType]="'icon'"
-    (clicked)="showOptions = !showOptions"
+    (clicked)="showOptions = !showOptions; cssCreate()"
   >
   </generic-button>
 </div>

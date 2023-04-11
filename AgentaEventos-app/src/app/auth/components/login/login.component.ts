@@ -9,6 +9,8 @@ import { AuthService } from '../../services/auth.service';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/state/app.state';
 import { SesionLoaded } from 'src/app/state/actions/sesion.actions';
+/* Libs */
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -43,16 +45,31 @@ export class LoginComponent {
               })
             );
             this._router.navigate(['/home']);
+            Swal.fire(
+              'Sesión iniciada correctamente',
+              'Recomendamos cambiar la contraseña si no se ha hecho recientemente.',
+              'success'
+            );
           } else {
             this._sharedService.consoleParser({
               thing:
                 'Hubo un error al iniciar sesión: No se pudo traer al usuario o las llaves de autenticación.',
               type: 'error',
             });
+            Swal.fire(
+              'Hubo un error al iniciar sesión: No se pudo traer al usuario o las llaves de autenticación.',
+              '',
+              'error'
+            );
           }
         },
         error: (error) => {
           this._sharedService.consoleParser({ thing: error, type: 'error' });
+          Swal.fire(
+            'Hubo un error al iniciar sesión: No se pudo traer al usuario o las llaves de autenticación.',
+            error.toString(),
+            'error'
+          );
         },
       });
   }

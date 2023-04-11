@@ -18,14 +18,16 @@ export class GenericDropdownComponent implements OnInit {
   @Input() labelTitle: string = '';
   @Input() placeholder: string | number = '';
   @Input() labelClasses: string = '';
-  @Input() buttonClasses: string =
-    'bef-btn-white bef-fs-1rem bef-text-btnBG bef-p-1rem bef-r-1rem';
   @Input() listClasses: string = '';
-  @Input() disabledClassButton: string = '';
+  @Input() buttonClasses: string =
+    ' d-block mx-auto bef-btn-white bef-fs-1rem bef-text-btnBG bef-p-1rem bef-r-1rem';
+  @Input() disabledClassButton: string =
+    ' d-block mx-auto bef-btn-gray bef-fs-1rem bef-text-btnBG bef-p-1rem bef-r-1rem';
   @Input() options: IOptionDropdown[] = [];
   @Input() disabled: boolean = false;
   @Input() withSearcher: boolean = false;
   @Input() multiselect: boolean = false;
+  @Input() dropdownOpen: boolean = false;
 
   public searcher: any = { search: '' };
   public splitter: string = String.fromCharCode(219);
@@ -93,10 +95,6 @@ export class GenericDropdownComponent implements OnInit {
     } else {
       this.clicked.emit(event);
     }
-  }
-
-  checkElementWidth(elementId: string): number {
-    return this._sharedService.checkElementWidth(elementId);
   }
 
   cssCreate() {

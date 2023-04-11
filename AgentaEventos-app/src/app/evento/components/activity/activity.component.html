@@ -5,7 +5,7 @@
     alt="{{ activity.headerImage.title }}"
     class="bef bef-w-100per bef-hmx-20rem bef-objectFit-cover bef-objectPosition-center bef-r-0_125rem"
   />
-  <ng-container *ngIf="!!isEdit">
+  <ng-container *ngIf="!!isEdit && activity._id !== ''">
     <file-uploader
       [uploadInputConfig]="{
         type: 'uploadAll',
@@ -31,6 +31,7 @@
       [dragNdropActive]="true"
       [customHtml]="'Subir imagen de cabecera'"
       [tooltip]="'Subir archivo de cabecera del evento'"
+      (recoverThing)="activityEdited.emit($event)"
     ></file-uploader>
   </ng-container>
   <!-- Title Edit -->
@@ -292,7 +293,7 @@
       />
     </div>
   </div>
-  <div>
+  <div *ngIf="!!isEdit">
     <h3
       class="fw-bold text-start bef bef-textAlign-md-center my-0 bef-mt-md-3rem bef-mb-md-1rem"
     >

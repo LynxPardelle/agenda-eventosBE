@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 /* Environments */
 import { environment } from 'src/environments/environment';
 /* RxJs */
@@ -29,7 +29,8 @@ import {
   TokenSelector,
 } from 'src/app/state/selectors/sesion.selector';
 import { LoadSesion } from 'src/app/state/actions/sesion.actions';
-
+/* Libs */
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-evento',
   templateUrl: './evento.component.html',
@@ -169,6 +170,7 @@ export class EventoComponent implements OnInit {
   constructor(
     private location: Location,
     private _route: ActivatedRoute,
+    private _router: Router,
     private _sharedService: SharedService,
     private _eventoService: EventoService,
     private _userService: UserService,
@@ -215,6 +217,11 @@ export class EventoComponent implements OnInit {
         this.options[2].show = false;
         this.options[3].show = false;
         this._sharedService.consoleParser({ thing: e, type: 'error' });
+        Swal.fire(
+          'Error al cargar la información del usuario',
+          e.toString(),
+          'error'
+        );
       },
     });
   }
@@ -230,6 +237,11 @@ export class EventoComponent implements OnInit {
         this.configData();
         this.configOptions();
         this._sharedService.consoleParser({ thing: err, type: 'error' });
+        Swal.fire(
+          'Error al cargar la información del evento.',
+          err.toString(),
+          'error'
+        );
       },
     });
   }
@@ -321,87 +333,253 @@ export class EventoComponent implements OnInit {
   }
   /* TODO: Añadir popups de confirmación, error y éxito. */
   onSubmit() {
-    if (this.evento._id !== '') {
-      this._eventoService.updateEvento(this.evento).subscribe({
-        next: (res: { status: string; evento: IEvento }) => {
-          this._sharedService.consoleParser({ thing: res, type: 'log' });
-          this.evento = res.evento ? res.evento : this.evento;
-          this.configData();
-          this.configOptions();
-          this.cssCreate();
-        },
-        error: (err) => {
-          this._sharedService.consoleParser({ thing: err, type: 'error' });
-        },
-      });
-    } else {
-      this._eventoService.createEvento(this.evento).subscribe({
-        next: (res: { status: string; evento: IEvento }) => {
-          this.evento = res.evento ? res.evento : this.evento;
-          this.configData();
-          this.configOptions();
-          this.cssCreate();
-        },
-        error: (err) => {
-          this._sharedService.consoleParser({ thing: err, type: 'error' });
-        },
-      });
-    }
+    Swal.fire({
+      title: '¿Quieres guardar los cambios?',
+      icon: 'warning',
+      showDenyButton: true,
+      confirmButtonText: 'Si',
+      denyButtonText: 'No',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (this.evento._id !== '') {
+          this._eventoService.updateEvento(this.evento).subscribe({
+            next: (res: { status: string; evento: IEvento }) => {
+              this._sharedService.consoleParser({ thing: res, type: 'log' });
+              this.evento = res.evento ? res.evento : this.evento;
+              this.configData();
+              this.configOptions();
+              this.cssCreate();
+              Swal.fire('Se guardaron los cambios', '', 'success');
+            },
+            error: (err) => {
+              this._sharedService.consoleParser({ thing: err, type: 'error' });
+              Swal.fire(
+                'Error al guardar la información del evento',
+                err.toString(),
+                'error'
+              );
+            },
+          });
+        } else {
+          this._eventoService.createEvento(this.evento).subscribe({
+            next: (res: { status: string; evento: IEvento }) => {
+              this.evento = res.evento ? res.evento : this.evento;
+              this.configData();
+              this.configOptions();
+              this.cssCreate();
+              Swal.fire(
+                'Se creo el evento',
+                `El evento ${this.evento.title} ha sido creado.`,
+                'success'
+              );
+              Swal.fire({
+                title: '¿Quieres crear otro evento?',
+                icon: 'warning',
+                showDenyButton: true,
+                confirmButtonText: 'Si',
+                denyButtonText: 'No',
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  this.evento = new Evento(
+                    '', // _id: string,
+                    null, // logo: File | null,
+                    null, // headerImage: File | null,
+                    'Descripción del evento.', // description: string,
+                    'Título del evento', // title: string,
+                    'Subtítulo del evento', // subtitle: string,
+                    [], // activities: IActivity[],
+                    [], // califications: ICalification[],
+                    [], // witness: IWitness[],
+                    [], // asistents: IUser[],
+                    [], // operators: IUser[],
+                    1, // ticketTypes: number,
+                    [], // photos: File[],
+                    new Date(), // date: Date,
+                    'Lugar del evento', // place: string,
+                    '', // titleColor: string,
+                    '', // textColor: string,
+                    '', // linkColor: string,
+                    '', // bgColor: string,
+                    [], // tickets: ITicket[],
+                    new Date(), // createAt: Date,
+                    new Date(), // changeDate: Date,
+                    null, // changeUser: IUser | null,
+                    'create',
+                    0, // ver: number,
+                    false, // isDeleted: boolean,
+                    [] // changeHistory: IEvento[]
+                  );
+                  this.newActivity = new Activity(
+                    '', // _id: string,
+                    0, // ticketType: number,
+                    'Nueva Actividad', // title: string,
+                    'Subtítulo de la actividad', // subtitle: string,
+                    'Descripción de la actividad', // description: string,
+                    null, // headerImage: File | null,
+                    [], // photos: File[],
+                    [], // califications: ICalification[],
+                    [], // witness: IWitness[],
+                    new Date(), // date: Date,
+                    'Lugar de la actividad', // place: string,
+                    '', // titleColor: string,
+                    '', // textColor: string,
+                    '', // linkColor: string,
+                    '', // bgColor: string,
+                    new Date(), // createAt: Date,
+                    new Date(), // changeDate: Date,
+                    null, // changeUser: IUser | null,
+                    'create',
+                    0, // ver: number,
+                    false, // isDeleted: boolean,
+                    [] // changeHistory: IActivity[]
+                  );
+                  this.newTicket = new Ticket(
+                    '', // _id: string,
+                    0, // ticketType: number,
+                    null, // evento: IEvento,
+                    null, // user: IUser,
+                    'asistente', // role: 'asistente' | 'operador general' | 'operador de actividad' | 'operador de asistentes',
+                    [], // activitiesAdmin: IActivity[],
+                    new Date(), // createAt: Date,
+                    new Date(), // changeDate: Date,
+                    null, // changeUser: IUser | null,
+                    'create', // changeType: 'create' | 'update' | 'delete',
+                    0, // ver: number,
+                    false, // isDeleted: boolean,
+                    [] // changeHistory: ITicket[]
+                  );
+                  this.newTicketUser = new User(
+                    '', // _id: string,
+                    '', // name: string,
+                    'basic', // role: 'basic' | 'premium' | 'special',
+                    'asistente', // type: 'asistente' | 'operador' | 'administrador' | 'técnico',
+                    [], // tickets: ITicket[],
+                    '', // email: string,
+                    '', // password: string,
+                    '', // lastPassword: string,
+                    '', // passRec: string,
+                    false, // verified: boolean,
+                    0, // users: number,
+                    new Date(), // createAt: Date,
+                    new Date(), // changeDate: Date,
+                    null, // changeUser: IUser | null,
+                    'create', // changeType: 'create' | 'update' | 'delete',
+                    0, // ver: number,
+                    false, // isDeleted: boolean,
+                    [] // changeHistory: IUser[]
+                  );
+                } else {
+                  this._router.navigate(['/evento/evento', this.evento._id]);
+                }
+              });
+            },
+            error: (err) => {
+              this._sharedService.consoleParser({ thing: err, type: 'error' });
+              Swal.fire(
+                'Error al guardar la información del evento',
+                err.toString(),
+                'error'
+              );
+            },
+          });
+        }
+      } else {
+        Swal.fire('No se guardaron los cambios', '', 'info');
+      }
+    });
   }
   async onSubmitTicket() {
-    if (this.newTicket._id !== '') {
-      this._eventoService.updateTicket(this.newTicket).subscribe({
-        next: (res: { status: string; ticket: ITicket }) => {
-          this._sharedService.consoleParser({ thing: res, type: 'log' });
-          this.newTicket = res.ticket ? res.ticket : this.newTicket;
-          this.configData();
-          this.configOptions();
-          this.cssCreate();
-        },
-        error: (err) => {
-          this._sharedService.consoleParser({ thing: err, type: 'error' });
-        },
-      });
-    } else {
-      try {
-        let user: { user: IUser; status: string } | null = await firstValueFrom(
-          this._userService.getUser(this.newTicketUser.email, 'email')
-        ).catch((err) => {
-          this._sharedService.consoleParser({ thing: err, type: 'error' });
-          return null;
-        });
-        if (!user?.user) {
-          this.newTicketUser.name =
-            this.newTicketUser.name !== ''
-              ? this.newTicketUser.name
-              : this.newTicketUser.email;
-          user = await firstValueFrom(
-            this._userService.register(this.newTicketUser)
-          );
-          if (!user?.user) {
-            throw new Error('No se pudo crear el usuario');
+    Swal.fire({
+      title: '¿Quieres guardar los cambios?',
+      icon: 'warning',
+      showDenyButton: true,
+      confirmButtonText: 'Si',
+      denyButtonText: 'No',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        (async () => {
+          if (this.newTicket._id !== '') {
+            this._eventoService.updateTicket(this.newTicket).subscribe({
+              next: (res: { status: string; ticket: ITicket }) => {
+                this._sharedService.consoleParser({ thing: res, type: 'log' });
+                this.newTicket = res.ticket ? res.ticket : this.newTicket;
+                this.getData(this.evento._id);
+                Swal.fire('Se guardaron los cambios', '', 'success');
+              },
+              error: (err) => {
+                this.getData(this.evento._id);
+                this._sharedService.consoleParser({
+                  thing: err,
+                  type: 'error',
+                });
+                Swal.fire(
+                  'Error al guardar la información del ticket',
+                  err.toString(),
+                  'error'
+                );
+              },
+            });
+          } else {
+            try {
+              let user: { user: IUser; status: string } | null =
+                await firstValueFrom(
+                  this._userService.getUser(this.newTicketUser.email, 'email')
+                ).catch((err) => {
+                  this._sharedService.consoleParser({
+                    thing: err,
+                    type: 'error',
+                  });
+                  return null;
+                });
+              if (!user?.user) {
+                this.newTicketUser.name =
+                  this.newTicketUser.name !== ''
+                    ? this.newTicketUser.name
+                    : this.newTicketUser.email;
+                user = await firstValueFrom(
+                  this._userService.register(this.newTicketUser)
+                );
+                if (!user?.user) {
+                  throw new Error('No se pudo crear el usuario');
+                }
+              }
+              this.newTicket.evento = this.evento;
+              this.newTicket.user = user.user;
+              this._sharedService.consoleParser({
+                thing: this.newTicket,
+                type: 'log',
+              });
+              let newTicket: ITicket | null = await firstValueFrom(
+                this._eventoService.createTicket(
+                  this.newTicket,
+                  this.newTicket.user._id,
+                  this.newTicket.evento._id
+                )
+              );
+              this._sharedService.consoleParser({
+                thing: newTicket,
+                type: 'log',
+              });
+              if (!newTicket) throw new Error('No se pudo crear el ticket');
+              Swal.fire('Se guardaron los cambios', '', 'success');
+              this.getData(this.evento._id);
+            } catch (error: any) {
+              this._sharedService.consoleParser({
+                thing: error,
+                type: 'error',
+              });
+              Swal.fire(
+                'Error al guardar la información del ticket',
+                error.toString(),
+                'error'
+              );
+            }
           }
-        }
-        this.newTicket.evento = this.evento;
-        this.newTicket.user = user.user;
-        this._sharedService.consoleParser({
-          thing: this.newTicket,
-          type: 'log',
-        });
-        let newTicket: ITicket | null = await firstValueFrom(
-          this._eventoService.createTicket(
-            this.newTicket,
-            this.newTicket.user._id,
-            this.newTicket.evento._id
-          )
-        );
-        this._sharedService.consoleParser({ thing: newTicket, type: 'log' });
-        if (!newTicket) throw new Error('No se pudo crear el ticket');
-        this.getData(this.evento._id);
-      } catch (error) {
-        this._sharedService.consoleParser({ thing: error, type: 'error' });
+        })();
+      } else {
+        Swal.fire('No se guardaron los cambios', '', 'info');
       }
-    }
+    });
   }
   getTicketTypesOptions(): IOptionDropdown[] {
     // Get the the maximun number in an array of numbers
@@ -510,6 +688,7 @@ export class EventoComponent implements OnInit {
       case 'edit':
         this.isEdit = true;
         this.showOptions = false;
+        this.cssCreate();
         break;
       case 'photos':
         break;
@@ -624,6 +803,9 @@ export class EventoComponent implements OnInit {
       | 'técnico'
   ) {
     return this._sharedService.checkRole(roleType, generalRole, role2Check);
+  }
+  checkForOptionsCanShow(): boolean {
+    return !!this.options.find((o: any) => !!o.show);
   }
   cssCreate() {
     this._sharedService.cssCreate();

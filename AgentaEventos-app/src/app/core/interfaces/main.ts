@@ -2,6 +2,7 @@ import { IUser } from 'src/app/user/interfaces/user';
 import { IFile } from './file';
 
 export interface IMain {
+  _id: string;
   logo: IFile | null;
   title: string;
   welcome: string;

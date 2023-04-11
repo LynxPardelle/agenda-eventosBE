@@ -699,7 +699,7 @@ exports.EventoController = {
                 const body = req.body;
                 const type = req.params.type ? req.params.type : "update";
                 if (yield exports.EventoController.inValidateTicket(body)) {
-                    throw new Error("Faltan datos.");
+                    throw new Error("Faltan datos: " + req.body.toString());
                 }
                 // Recoger el id de la url
                 let ticket = yield exports.EventoController.DoGetTicketByAnything({

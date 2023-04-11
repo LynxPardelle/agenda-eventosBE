@@ -45,7 +45,7 @@ router.put(
 router.put(
   "/calification/:type",
   [md_auth, md_role.isOperador],
-  EventoController.updateEvento
+  EventoController.updateCalification
 );
 router.put(
   "/evento/:type",
@@ -55,7 +55,7 @@ router.put(
 router.put(
   "/ticket/:type",
   [md_auth, md_role.isOperador],
-  EventoController.updateEvento
+  EventoController.updateTicket
 );
 /* Files */
 router.post(

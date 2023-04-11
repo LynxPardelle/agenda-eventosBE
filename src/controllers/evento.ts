@@ -712,7 +712,7 @@ export const EventoController: any = {
       const body = req.body;
       const type = req.params.type ? req.params.type : "update";
       if (await EventoController.inValidateTicket(body)) {
-        throw new Error("Faltan datos.");
+        throw new Error("Faltan datos: " + req.body.toString());
       }
       // Recoger el id de la url
       let ticket: ITicket | null | any =

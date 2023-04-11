@@ -3,6 +3,7 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnInit,
   Output,
   SimpleChanges,
 } from '@angular/core';
@@ -15,13 +16,15 @@ import { IEvento } from '../../interfaces/evento';
 /* Services */
 import { SharedService } from 'src/app/shared/services/shared.service';
 import { EventoService } from '../../services/evento.service';
+/* Libs */
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'activity',
   templateUrl: './activity.component.html',
   styleUrls: ['./activity.component.scss'],
 })
-export class ActivityComponent implements OnChanges {
+export class ActivityComponent implements OnInit, OnChanges {
   /* Environments */
   public url: string = environment.api + '/evento/';
   /* Input */
@@ -44,6 +47,11 @@ export class ActivityComponent implements OnChanges {
     private _sharedService: SharedService,
     private _eventoService: EventoService
   ) {}
+  ngOnInit(): void {
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
+    this.cssCreate();
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
@@ -54,36 +62,64 @@ export class ActivityComponent implements OnChanges {
         changes['ticketTypes'].previousValue
     ) {
       this.ticketTypesOptions = this.getTicketTypesOptions();
+      this.cssCreate();
     }
   }
   onSubmit() {
-    if (this.activity._id !== '') {
-      this._eventoService.updateActivity(this.activity).subscribe({
-        next: (res: { status: string; activity: IActivity }) => {
-          this._sharedService.consoleParser({ thing: res, type: 'log' });
-          this.activity = res.activity ? res.activity : this.activity;
-          this.activityEdited.emit();
-          this.cssCreate();
-        },
-        error: (err) => {
-          this._sharedService.consoleParser({ type: 'error', thing: err });
-        },
-      });
-    } else {
-      this._eventoService
-        .createActivity(this.activity, this.eventoId)
-        .subscribe({
-          next: (res: { status: string; activity: IActivity }) => {
-            this._sharedService.consoleParser({ thing: res, type: 'log' });
-            this.activity = res.activity ? res.activity : this.activity;
-            this.activityEdited.emit();
-            this.cssCreate();
-          },
-          error: (err) => {
-            this._sharedService.consoleParser({ type: 'error', thing: err });
-          },
-        });
-    }
+    Swal.fire({
+      title: '¿Quieres guardar los cambios?',
+      icon: 'warning',
+      showDenyButton: true,
+      confirmButtonText: 'Si',
+      denyButtonText: 'No',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (this.activity._id !== '') {
+          this._eventoService.updateActivity(this.activity).subscribe({
+            next: (res: { status: string; activity: IActivity }) => {
+              this._sharedService.consoleParser({ thing: res, type: 'log' });
+              this.activity = res.activity ? res.activity : this.activity;
+              this.activityEdited.emit();
+              this.cssCreate();
+              Swal.fire('Se guardaron los cambios', '', 'success');
+            },
+            error: (err) => {
+              this._sharedService.consoleParser({ type: 'error', thing: err });
+              Swal.fire(
+                'Error al guardar la información de la actividad.',
+                err.toString(),
+                'error'
+              );
+            },
+          });
+        } else {
+          this._eventoService
+            .createActivity(this.activity, this.eventoId)
+            .subscribe({
+              next: (res: { status: string; activity: IActivity }) => {
+                this._sharedService.consoleParser({ thing: res, type: 'log' });
+                this.activity = res.activity ? res.activity : this.activity;
+                this.activityEdited.emit();
+                this.cssCreate();
+                Swal.fire('Se guardaron los cambios', '', 'success');
+              },
+              error: (err) => {
+                this._sharedService.consoleParser({
+                  type: 'error',
+                  thing: err,
+                });
+                Swal.fire(
+                  'Error al guardar la información de la actividad.',
+                  err.toString(),
+                  'error'
+                );
+              },
+            });
+        }
+      } else {
+        Swal.fire('No se guardaron los cambios', '', 'info');
+      }
+    });
   }
   getTicketTypesOptions(): IOptionDropdown[] {
     // Get the the maximun number in an array of numbers

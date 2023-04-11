@@ -1,1 +1,23 @@
-<p>error works!</p>
+<h1 class="text-center my-3 bef bef-text-resaltaBG">Error</h1>
+<p class="text-center my-3" *ngIf="main$ | async as main">
+  <ng-container
+    *ngIf="main.main?._id && main.main?.errorMsg; else elseErrorMessageTemplate"
+  >
+    {{ main.main?.errorMsg }}
+  </ng-container>
+  <ng-template #elseErrorMessageTemplate>
+    Error: No se encontró la página solicitada
+  </ng-template>
+</p>
+<a
+  class="d-block mx-auto text-center my-3 text-decoration-none bef bef-text-btnBG"
+  href="/"
+  [routerLink]="['/']"
+  >Regresar al inicio</a
+>
+<button
+  class="d-block btn mx-auto p-3 my-3 bef bef-btn-btnBG bef-text-mainBG"
+  (click)="returnToPreviousPage()"
+>
+  Regresar a la página anterior
+</button>

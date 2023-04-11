@@ -21,6 +21,8 @@ import { SesionSelector } from 'src/app/state/selectors/sesion.selector';
 import { MainSelector } from 'src/app/state/selectors/main.selector';
 import { LoadConfig } from 'src/app/state/actions/config.actions';
 import { LoadMain } from 'src/app/state/actions/main.actions';
+/* Lib */
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'home',
@@ -128,10 +130,14 @@ export class HomeComponent implements OnInit, OnDestroy {
           option: 'Acerca de nosotros',
           link: '/about',
         });
-        this.cssCreate();
       },
       error: (e) => {
         this._sharedService.consoleLog(e, null, 'padding: 1rem;', 'error');
+        Swal.fire(
+          'Error al cargar la información del usuario',
+          e.toString(),
+          'error'
+        );
       },
     });
   }
@@ -141,10 +147,14 @@ export class HomeComponent implements OnInit, OnDestroy {
         if (c.config) {
           // this._sharedService.consoleLog(c.config);
         }
-        this.cssCreate();
       },
       error: (e) => {
         this._sharedService.consoleLog(e, null, 'padding: 1rem;', 'error');
+        Swal.fire(
+          'Error al cargar la configuración del sitio',
+          e.toString(),
+          'error'
+        );
       },
     });
   }
@@ -154,17 +164,33 @@ export class HomeComponent implements OnInit, OnDestroy {
         if (c.main) {
           // this._sharedService.consoleLog(c.main);
         }
-        this.cssCreate();
       },
       error: (e) => {
         this._sharedService.consoleLog(e, null, 'padding: 1rem;', 'error');
+        Swal.fire(
+          'Error al cargar la información del sitio',
+          e.toString(),
+          'error'
+        );
       },
     });
   }
   clicked(type: string) {
     switch (true) {
       case type === 'logout':
-        this.logOut();
+        Swal.fire({
+          title: '¿Quieres cerrar sesión?',
+          icon: 'warning',
+          showDenyButton: true,
+          confirmButtonText: 'Si',
+          denyButtonText: 'No',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.logOut();
+          } else {
+            Swal.fire('No se ha cerrado sesión', '', 'info');
+          }
+        });
         break;
       default:
         break;
@@ -174,6 +200,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.store.dispatch(CloseSesion());
     this.store.dispatch(LoadSesion());
     this._router.navigate(['/auth/login']);
+    Swal.fire('Sesión cerrada', '', 'success');
   }
   getHTML(type: string): string {
     return this._sharedService.getHTML(type);

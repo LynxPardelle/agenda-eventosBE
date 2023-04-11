@@ -3,6 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 /* Services */
 import { SharedService } from 'src/app/shared/services/shared.service';
+/* Libs */
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-recover',
@@ -48,6 +50,11 @@ export class RecoverComponent implements OnInit {
   }
   onSubmit() {
     this._sharedService.consoleLog('onSubmit');
+    Swal.fire(
+      'Error: Función no disponible',
+      'Actualmente esta función no está disponible, contacte al administrador del sitio.',
+      'error'
+    );
   }
   changesInput(thing: any) {
     Object.keys(this.lockeds).forEach((lockedInput) => {

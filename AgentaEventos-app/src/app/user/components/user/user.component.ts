@@ -17,6 +17,8 @@ import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/state/app.state';
 import { IdentitySelector } from 'src/app/state/selectors/sesion.selector';
 import { LoadSesion } from 'src/app/state/actions/sesion.actions';
+/* Libs */
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'user',
@@ -121,6 +123,11 @@ export class UserComponent implements OnInit {
       },
       error: (err) => {
         this._sharedService.consoleParser({ thing: err, type: 'error' });
+        Swal.fire(
+          'Error al cargar la información del usuario',
+          err.toString(),
+          'error'
+        );
       },
     });
   }
@@ -145,45 +152,74 @@ export class UserComponent implements OnInit {
       },
       error: (err) => {
         this._sharedService.consoleParser({ thing: err, type: 'error' });
+        Swal.fire(
+          'Error al cargar la información del usuario',
+          err.toString(),
+          'error'
+        );
         this._router.navigate(['/user/user']);
       },
     });
   }
   onSubmit() {
-    if (this.user._id !== '') {
-      this._userService.updateUser(this.user).subscribe({
-        next: (res: { status: string; user: IUser }) => {
-          this.user = res.user ? res.user : this.user;
-          this.user.password = '';
-          this.user2compare.password = '';
-          this.user.lastPassword = '';
-          this.user.passRec = '';
-          this.generalRoleOptions = this.getGeneralRoleOptions();
-          this.checkForLockeds();
-          this.cssCreate();
-        },
-        error: (err) => {
-          this._sharedService.consoleParser({ thing: err, type: 'error' });
-        },
-      });
-    } else {
-      this.user.lastPassword = this.user.password;
-      this._userService.register(this.user).subscribe({
-        next: (res: { status: string; user: IUser }) => {
-          this.user = res.user ? res.user : this.user;
-          this.user.password = '';
-          this.user2compare.password = '';
-          this.user.lastPassword = '';
-          this.user.passRec = '';
-          this.generalRoleOptions = this.getGeneralRoleOptions();
-          this.checkForLockeds();
-          this.cssCreate();
-        },
-        error: (err: any) => {
-          this._sharedService.consoleParser({ thing: err, type: 'error' });
-        },
-      });
-    }
+    Swal.fire({
+      title: '¿Quieres guardar los cambios?',
+      icon: 'warning',
+      showDenyButton: true,
+      confirmButtonText: 'Si',
+      denyButtonText: 'No',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (this.user._id !== '') {
+          this._userService.updateUser(this.user).subscribe({
+            next: (res: { status: string; user: IUser }) => {
+              this.user = res.user ? res.user : this.user;
+              this.user.password = '';
+              this.user2compare.password = '';
+              this.user.lastPassword = '';
+              this.user.passRec = '';
+              this.generalRoleOptions = this.getGeneralRoleOptions();
+              this.checkForLockeds();
+              this.cssCreate();
+              Swal.fire('Se guardaron los cambios', '', 'success');
+            },
+            error: (err) => {
+              this._sharedService.consoleParser({ thing: err, type: 'error' });
+              Swal.fire(
+                'Error al guardar la información del usuario',
+                err.toString(),
+                'error'
+              );
+            },
+          });
+        } else {
+          this.user.lastPassword = this.user.password;
+          this._userService.register(this.user).subscribe({
+            next: (res: { status: string; user: IUser }) => {
+              this.user = res.user ? res.user : this.user;
+              this.user.password = '';
+              this.user2compare.password = '';
+              this.user.lastPassword = '';
+              this.user.passRec = '';
+              this.generalRoleOptions = this.getGeneralRoleOptions();
+              this.checkForLockeds();
+              this.cssCreate();
+              Swal.fire('Se guardaron los cambios', '', 'success');
+            },
+            error: (err: any) => {
+              this._sharedService.consoleParser({ thing: err, type: 'error' });
+              Swal.fire(
+                'Error al guardar la información del usuario',
+                err.toString(),
+                'error'
+              );
+            },
+          });
+        }
+      } else {
+        Swal.fire('Los cambios no se guardaron', '', 'info');
+      }
+    });
   }
   checkForLockeds() {
     this.lockeds['name'] = this.user.name === '';

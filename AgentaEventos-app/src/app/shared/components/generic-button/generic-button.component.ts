@@ -49,14 +49,16 @@ export class GenericButtonComponent implements OnInit {
   ngOnInit(): void {
     this.randomId = this._harshifyPipe.transform(9, 'letters');
     this.buttonId.emit(this.randomId);
-    if (this.classButton) {
-      this._befService.updateClasses(this.classButton.split(' '));
+    if (this.classButton !== '' && this.classButton.includes(' ')) {
+      let classButton = this.classButton
+        .split(' ')
+        .filter((cB) => cB.includes('bef-'))
+        .join(' ');
+      if (classButton !== '' && classButton.includes(' ')) {
+        this._befService.updateClasses(this.classButton.split(' '));
+      }
     }
     this.cssCreate();
-  }
-
-  CC(nC: string): any {
-    return this._sharedService.ngClassConverter(nC);
   }
 
   cssCreate(): void {

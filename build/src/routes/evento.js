@@ -47,9 +47,9 @@ router.get("/eventos/:page?/:limit?/:sort?/:type?/:search?", authenticated_1.opt
 router.get("/activity/:id/:firstOpen?", authenticated_1.optionalAuth, evento_1.EventoController.viewActivity);
 /* Update & Delete */
 router.put("/activity/:type", [authenticated_1.ensureAuth, md_role.isOperador], evento_1.EventoController.updateActivity);
-router.put("/calification/:type", [authenticated_1.ensureAuth, md_role.isOperador], evento_1.EventoController.updateEvento);
+router.put("/calification/:type", [authenticated_1.ensureAuth, md_role.isOperador], evento_1.EventoController.updateCalification);
 router.put("/evento/:type", [authenticated_1.ensureAuth, md_role.isOperador], evento_1.EventoController.updateEvento);
-router.put("/ticket/:type", [authenticated_1.ensureAuth, md_role.isOperador], evento_1.EventoController.updateEvento);
+router.put("/ticket/:type", [authenticated_1.ensureAuth, md_role.isOperador], evento_1.EventoController.updateTicket);
 /* Files */
 router.post("/files/:typeObj/:type/:id", [authenticated_1.ensureAuth, md_upload], evento_1.EventoController.UploadFiles);
 router.delete("/file/:typeObj/:type/:idObj/:id", authenticated_1.ensureAuth, evento_1.EventoController.deleteFile);
