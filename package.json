@@ -39,7 +39,6 @@
     "@types/bcrypt": "^5.0.0",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.15",
-    "@types/mongodb": "^4.0.7",
     "@types/mongoose-paginate": "^5.0.12",
     "@types/multer": "^1.4.7",
     "@types/validator": "^13.7.10",
