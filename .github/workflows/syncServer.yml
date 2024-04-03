@@ -36,7 +36,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: |
-            cd /home/LynxPardelle/agenda-eventosBE # we move into our app's folder
+            cd /home/agenda-eventosBE # we move into our app's folder
             git reset --hard
             git pull git@github.com:LynxPardelle/agenda-eventosBE.git # we pull any changes from git
             npm prune # we remove any unused dependencies
