@@ -210,8 +210,8 @@ exports.UserController = {
                     html: `
         <p>
           Puedes ver el usuario en este link:
-          <a href="${domain}/usuario/${user._id}" >
-            ${domain}/usuario/${user._id}
+          <a href="${domain}/user/user/${user._id}" >
+            ${domain}/user/user/${user._id}
           <a>
         </p>`,
                 };
@@ -366,8 +366,8 @@ exports.UserController = {
                     html: `
           <p>
             Puedes ver el usuario en este link:
-            <a href="${domain}/usuario/${userStored._id}" >
-              ${domain}/usuario/${userStored._id}
+            <a href="${domain}/user/user/${userStored._id}" >
+              ${domain}/user/user/${userStored._id}
             <a>
           </p>
           <p>

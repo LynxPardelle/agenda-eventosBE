@@ -191,7 +191,7 @@ export const EventoController: any = {
         title: message,
         text: message,
         html: `<h1>${message}</h1>
-        <p>Puedes ver la calificación <a href="${domain}/evento/${typeObj}/${obj._id}">aquí</a>.</p>`,
+        <p>Puedes ver la calificación <a href="${domain}/evento/evento/${typeObj}/${obj._id}">aquí</a>.</p>`,
       };
       const mails = [
         {
@@ -519,8 +519,8 @@ export const EventoController: any = {
         html: `
         <p>
           Puedes ver la actividad en este link:
-          <a href="${domain}/evento/activity/${activity._id}" >
-            ${domain}/evento/activity/${activity._id}
+          <a href="${domain}/evento/evento/activity/${activity._id}" >
+            ${domain}/evento/evento/activity/${activity._id}
           <a>
         </p>`,
       };
@@ -882,7 +882,7 @@ export const EventoController: any = {
         title: message,
         text: message,
         html: `<h1>${message}</h1>
-        <p>Puedes verla <a href="${domain}/evento/${typeObj}/${obj._id}">aquí</a>.</p>`,
+        <p>Puedes verla <a href="${domain}/evento/evento/${typeObj}/${obj._id}">aquí</a>.</p>`,
       };
       const mails = [
         {
@@ -1006,7 +1006,9 @@ export const EventoController: any = {
           typeObj === "evento"
             ? `el evento ${typeObj}`
             : ` la actividad ${typeObj}`
-        } <a href="${domain}/evento/${typeObj}/${obj._id}">aquí</a>.</p>`,
+        } <a href="${domain}/evento/evento/${typeObj}/${
+          obj._id
+        }">aquí</a>.</p>`,
       };
       const mails = [
         {

@@ -188,7 +188,7 @@ exports.EventoController = {
                     title: message,
                     text: message,
                     html: `<h1>${message}</h1>
-        <p>Puedes ver la calificación <a href="${domain}/${typeObj}/${obj._id}">aquí</a>.</p>`,
+        <p>Puedes ver la calificación <a href="${domain}/evento/evento/${typeObj}/${obj._id}">aquí</a>.</p>`,
                 };
                 const mails = [
                     Object.assign({ to: adminMail }, mail),
@@ -296,7 +296,7 @@ exports.EventoController = {
                     title: message,
                     text: message,
                     html: `<h1>${message}</h1>
-        <p>Puedes ver el evento <a href="${domain}/evento/${ticketStored.evento._id}">aquí</a>.</p>`,
+        <p>Puedes ver el evento <a href="${domain}/evento/evento/${ticketStored.evento._id}">aquí</a>.</p>`,
                 };
                 const mails = [
                     Object.assign({ to: adminMail }, mail),
@@ -504,8 +504,8 @@ exports.EventoController = {
                     html: `
         <p>
           Puedes ver la actividad en este link:
-          <a href="${domain}/actividad/${activity._id}" >
-            ${domain}/actividad/${activity._id}
+          <a href="${domain}/evento/evento/activity/${activity._id}" >
+            ${domain}/evento/evento/activity/${activity._id}
           <a>
         </p>`,
                 };
@@ -585,8 +585,8 @@ exports.EventoController = {
                     html: `
         <p>
           Puedes ver la calificación en este link:
-          <a href="${domain}/calificación/${calification._id}" >
-            ${domain}/calificación/${calification._id}
+          <a href="${domain}/evento/evento/${calification.evento._id}" >
+            ${domain}/evento/evento/${calification.evento._id}
           <a>
         </p>`,
                 };
@@ -666,8 +666,8 @@ exports.EventoController = {
                     html: `
         <p>
           Puedes ver el evento en este link:
-          <a href="${domain}/evento/${evento._id}" >
-            ${domain}/evento/${evento._id}
+          <a href="${domain}/evento/evento/${evento._id}" >
+            ${domain}/evento/evento/${evento._id}
           <a>
         </p>`,
                 };
@@ -747,8 +747,8 @@ exports.EventoController = {
                     html: `
         <p>
           Puedes ver el ticket en este link:
-          <a href="${domain}/ticket/${ticket._id}" >
-            ${domain}/ticket/${ticket._id}
+          <a href="${domain}/evento/evento/${ticket.evento._id}" >
+            ${domain}/evento/evento/${ticket.evento._id}
           <a>
         </p>`,
                 };
@@ -859,7 +859,7 @@ exports.EventoController = {
                     title: message,
                     text: message,
                     html: `<h1>${message}</h1>
-        <p>Puedes verla <a href="${domain}/${typeObj}/${obj._id}">aquí</a>.</p>`,
+        <p>Puedes verla <a href="${domain}/evento/evento/${typeObj}/${obj._id}">aquí</a>.</p>`,
                 };
                 const mails = [
                     Object.assign({ to: adminMail }, mail),
@@ -974,7 +974,7 @@ exports.EventoController = {
                     html: `<h1>${message}</h1>
         <p>Puedes ver ${typeObj === "evento"
                         ? `el evento ${typeObj}`
-                        : ` la actividad ${typeObj}`} <a href="${domain}/${typeObj}/${obj._id}">aquí</a>.</p>`,
+                        : ` la actividad ${typeObj}`} <a href="${domain}/evento/evento/${typeObj}/${obj._id}">aquí</a>.</p>`,
                 };
                 const mails = [
                     Object.assign({ to: adminMail }, mail),

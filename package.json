@@ -1,6 +1,6 @@
 {
   "name": "agenda-eventosbe",
-  "version": "1.0.0",
+  "version": "0.0.10",
   "description": "Back End de proyecto Agenta Eventos",
   "main": "index.js",
   "scripts": {
