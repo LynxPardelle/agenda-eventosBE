@@ -58,7 +58,7 @@ app.get("/datos-autor", (req, res) => {
 });
 /* Static files */
 app.get("*", (req, res) => {
-    res.sendFile(path_1.default.resolve("client/index.html"));
+    res.sendFile(path_1.default.resolve("../../client/index.html"));
 });
 /* Port */
 app.set("port", process.env.PORT || "3669");
