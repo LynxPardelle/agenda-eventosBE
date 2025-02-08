@@ -70,7 +70,6 @@ export class AppComponent implements OnInit, OnDestroy {
       'bef-w-250px',
     ]);
     this._befService.setTimeBetweenReCreate(100);
-    this._befService.setTimeLastTimeAskedPlus(250);
     this.cssCreate();
   }
 

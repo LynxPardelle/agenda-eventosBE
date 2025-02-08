@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 /* Interfaces */
 import { IUser } from '../../interfaces/user';
 import { ITicket } from 'src/app/evento/interfaces/ticket';
-import { IActionTable } from '../../../../../../../front/src/app/shared/interfaces/IactionTable';
+import { IActionTable } from 'src/app/shared/interfaces/actionTable';
 import { ISpecialCell } from 'src/app/shared/interfaces/specialCell';
 import { IStoredSpecialCell } from 'src/app/shared/interfaces/storedSpecialCell';
 import { IOptionButton } from 'src/app/shared/interfaces/optionButton';
