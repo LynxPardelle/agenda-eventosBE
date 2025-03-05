@@ -86,7 +86,7 @@ const ticketKeys = [
 exports.EventoController = {
     /* Test */
     datosAutor: (req, res) => {
-        return res.status(200).send({
+        res.status(200).send({
             autor: "Lynx Pardelle",
             url: "https://www.lynxpardelle.com",
         });
@@ -104,13 +104,13 @@ exports.EventoController = {
                 if (!activityStored) {
                     throw new Error("No se creó la actividad.");
                 }
-                return res.status(201).send({
+                res.status(201).send({
                     status: "success",
                     activity: activityStored,
                 });
             }
             catch (error) {
-                return res.status(nError).send({
+                res.status(nError).send({
                     status: "error",
                     message: "Error al crear la actividad.",
                     errorMessage: error.message,
@@ -201,14 +201,14 @@ exports.EventoController = {
                     }
                 }
                 mail_1.default.DoSendEmail(mails);
-                return res.status(201).send({
+                res.status(201).send({
                     status: "success",
                     calification: calificationStored,
                     obj: obj,
                 });
             }
             catch (error) {
-                return res.status(nError).send({
+                res.status(nError).send({
                     status: "error",
                     message: "Error al crear la calificación.",
                     errorMessage: error.message,
@@ -224,13 +224,13 @@ exports.EventoController = {
                 if (!eventoStored) {
                     throw new Error("No se creó el evento.");
                 }
-                return res.status(201).send({
+                res.status(201).send({
                     status: "success",
                     evento: eventoStored,
                 });
             }
             catch (error) {
-                return res.status(500).send({
+                res.status(500).send({
                     status: "error",
                     message: "Error al crear el evento.",
                     errorMessage: error.message,
@@ -306,14 +306,14 @@ exports.EventoController = {
                     mails.push(Object.assign({ to: u.email }, mail));
                 });
                 mail_1.default.DoSendEmail(mails);
-                return res.status(201).send({
+                res.status(201).send({
                     status: "success",
                     ticket: ticketStored,
                     user: user,
                 });
             }
             catch (error) {
-                return res.status(500).send({
+                res.status(500).send({
                     status: "error",
                     message: "Error al crear el ticket.",
                     errorMessage: error.message,
@@ -340,7 +340,7 @@ exports.EventoController = {
                 for (let evento of eventos.eventos) {
                     evento = yield utility_1.default.deletePasswordFields(evento);
                 }
-                return res.status(200).send({
+                res.status(200).send({
                     status: "success",
                     total_items: eventos.total,
                     pages: eventos.pages,
@@ -348,7 +348,7 @@ exports.EventoController = {
                 });
             }
             catch (err) {
-                return res.status(nError).send({
+                res.status(nError).send({
                     status: "error",
                     message: "Error al devolver eventos.",
                     error_message: err.message,
@@ -358,8 +358,8 @@ exports.EventoController = {
         });
     },
     getEvento(req, res) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
+            var _a;
             let nError = 500;
             try {
                 let evento = yield exports.EventoController.DoGetEventoByAnything({
@@ -387,13 +387,13 @@ exports.EventoController = {
                     evento = yield exports.EventoController.DoUpdateEvento(evento);
                 }
                 evento = yield utility_1.default.deletePasswordFields(evento);
-                return res.status(200).send({
+                res.status(200).send({
                     status: "success",
                     evento: evento,
                 });
             }
             catch (err) {
-                return res.status(nError).send({
+                res.status(nError).send({
                     status: "error",
                     message: "Error al devolver al evento.",
                     error_message: err.message,
@@ -403,8 +403,8 @@ exports.EventoController = {
         });
     },
     viewActivity(req, res) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
+            var _a;
             let nError = 500;
             try {
                 let activity = yield exports.EventoController.DoGetActivityByAnything({
@@ -432,13 +432,13 @@ exports.EventoController = {
                     activity = yield exports.EventoController.DoUpdateEvento(activity);
                 }
                 activity = yield utility_1.default.deletePasswordFields(activity);
-                return res.status(200).send({
+                res.status(200).send({
                     status: "success",
                     activity: activity,
                 });
             }
             catch (err) {
-                return res.status(nError).send({
+                res.status(nError).send({
                     status: "error",
                     message: "Error al devolver la actividad.",
                     error_message: err.message,
@@ -449,8 +449,8 @@ exports.EventoController = {
     },
     /* Update & Delete */
     updateActivity(req, res) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
+            var _a;
             let nError = 500;
             try {
                 const body = req.body;
@@ -514,13 +514,13 @@ exports.EventoController = {
                     mails.push(Object.assign({ to: req.user.email }, mail));
                 }
                 mail_1.default.DoSendEmail(mails);
-                return res.status(200).send({
+                res.status(200).send({
                     status: "success",
                     activity: activity,
                 });
             }
             catch (err) {
-                return res.status(nError).send({
+                res.status(nError).send({
                     status: "error",
                     message: "Error al devolver al actividad.",
                     error_message: err.message,
@@ -530,8 +530,8 @@ exports.EventoController = {
         });
     },
     updateCalification(req, res) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
+            var _a;
             let nError = 500;
             try {
                 const body = req.body;
@@ -595,13 +595,13 @@ exports.EventoController = {
                     mails.push(Object.assign({ to: req.user.email }, mail));
                 }
                 mail_1.default.DoSendEmail(mails);
-                return res.status(200).send({
+                res.status(200).send({
                     status: "success",
                     calification: calification,
                 });
             }
             catch (err) {
-                return res.status(nError).send({
+                res.status(nError).send({
                     status: "error",
                     message: "Error al devolver al calificación.",
                     error_message: err.message,
@@ -611,8 +611,8 @@ exports.EventoController = {
         });
     },
     updateEvento(req, res) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
+            var _a;
             let nError = 500;
             try {
                 const body = req.body;
@@ -676,13 +676,13 @@ exports.EventoController = {
                     mails.push(Object.assign({ to: req.user.email }, mail));
                 }
                 mail_1.default.DoSendEmail(mails);
-                return res.status(200).send({
+                res.status(200).send({
                     status: "success",
                     evento: evento,
                 });
             }
             catch (err) {
-                return res.status(nError).send({
+                res.status(nError).send({
                     status: "error",
                     message: "Error al devolver al evento.",
                     error_message: err.message,
@@ -692,8 +692,8 @@ exports.EventoController = {
         });
     },
     updateTicket(req, res) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
+            var _a;
             let nError = 500;
             try {
                 const body = req.body;
@@ -757,13 +757,13 @@ exports.EventoController = {
                     mails.push(Object.assign({ to: req.user.email }, mail));
                 }
                 mail_1.default.DoSendEmail(mails);
-                return res.status(200).send({
+                res.status(200).send({
                     status: "success",
                     ticket: ticket,
                 });
             }
             catch (err) {
-                return res.status(nError).send({
+                res.status(nError).send({
                     status: "error",
                     message: "Error al devolver al ticket.",
                     error_message: err.message,
@@ -872,14 +872,14 @@ exports.EventoController = {
                     }
                 }
                 mail_1.default.DoSendEmail(mails);
-                return res.status(200).send({
+                res.status(200).send({
                     status: "success",
                     obj: obj,
                     files: files,
                 });
             }
             catch (e) {
-                return res.status(nError).send({
+                res.status(nError).send({
                     status: "error",
                     message: "El archivo tuvo un error al cargarse.",
                     error_message: e.message,
@@ -987,13 +987,13 @@ exports.EventoController = {
                     }
                 }
                 mail_1.default.DoSendEmail(mails);
-                return res.status(200).send({
+                res.status(200).send({
                     status: "success",
                     obj: obj,
                 });
             }
             catch (e) {
-                return res.status(nError).send({
+                res.status(nError).send({
                     status: "error",
                     message: "El archivo tuvo un error al borrarse.",
                     error_message: e.message,
@@ -1011,12 +1011,12 @@ exports.EventoController = {
                 if (!(0, fs_1.existsSync)(filePath)) {
                     filePath = path_1.default.join(__dirname, "./uploads/evento/", req.params.file);
                     if (!(0, fs_1.existsSync)(filePath)) {
-                        return res.status(404).send({ error: "File not found" });
+                        res.status(404).send({ error: "File not found" });
                     }
                 }
             }
         }
-        return res.sendFile(filePath);
+        res.sendFile(filePath);
     },
     /* 2Export */
     /* DoCreate */
@@ -1575,7 +1575,7 @@ exports.EventoController = {
                 if (!activity.changeHistory)
                     activity.changeHistory = [];
                 activity.changeHistory.push(activityHistory._id);
-                const activityUpdate = yield activity_1.default.findByIdAndUpdate(activity._id.toHexString(), activity, {
+                const activityUpdate = yield activity_1.default.findByIdAndUpdate(activity._id.toString(), activity, {
                     new: true,
                 }).populate(populate_1.default.activity);
                 if (activityUpdate === null) {
@@ -1591,7 +1591,7 @@ exports.EventoController = {
     DoUpdateCalification(calification) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const calificationUpdate = yield calification_1.default.findByIdAndUpdate(calification._id.toHexString(), calification, {
+                const calificationUpdate = yield calification_1.default.findByIdAndUpdate(calification._id.toString(), calification, {
                     new: true,
                 }).populate(populate_1.default.calification);
                 if (calificationUpdate === null) {
@@ -1614,7 +1614,7 @@ exports.EventoController = {
                 if (!evento.changeHistory)
                     evento.changeHistory = [];
                 evento.changeHistory.push(eventoHistory._id);
-                const eventoUpdate = yield evento_1.default.findByIdAndUpdate(evento._id.toHexString(), evento, { new: true }).populate(populate_1.default.evento);
+                const eventoUpdate = yield evento_1.default.findByIdAndUpdate(evento._id.toString(), evento, { new: true }).populate(populate_1.default.evento);
                 if (eventoUpdate === null) {
                     throw new Error("No se actualizó el evento.");
                 }
@@ -1635,7 +1635,7 @@ exports.EventoController = {
                 if (!ticket.changeHistory)
                     ticket.changeHistory = [];
                 ticket.changeHistory.push(ticketHistory._id);
-                const ticketUpdate = yield ticket_1.default.findByIdAndUpdate(ticket._id.toHexString(), ticket, {
+                const ticketUpdate = yield ticket_1.default.findByIdAndUpdate(ticket._id.toString(), ticket, {
                     new: true,
                 }).populate(populate_1.default.ticket);
                 if (ticketUpdate === null) {
@@ -1651,7 +1651,7 @@ exports.EventoController = {
     DoUpdateWitness(witness) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const witnessUpdate = yield witness_1.default.findByIdAndUpdate(witness._id.toHexString(), witness, {
+                const witnessUpdate = yield witness_1.default.findByIdAndUpdate(witness._id.toString(), witness, {
                     new: true,
                 }).populate(populate_1.default.witness);
                 if (witnessUpdate === null) {

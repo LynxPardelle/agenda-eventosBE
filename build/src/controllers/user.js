@@ -50,7 +50,7 @@ const userKeys = [
 exports.UserController = {
     /* Test */
     datosAutor: (req, res) => {
-        return res.status(200).send({
+        res.status(200).send({
             autor: "Lynx Pardelle",
             url: "https://www.lynxpardelle.com",
         });
@@ -63,7 +63,7 @@ exports.UserController = {
                 if (!userData || !userData.user) {
                     throw new Error("No se creó el usuario.");
                 }
-                return res.status(201).send({
+                res.status(201).send({
                     status: "success",
                     user: userData.user,
                     password: userData.password,
@@ -71,7 +71,7 @@ exports.UserController = {
                 });
             }
             catch (error) {
-                return res.status(500).send({
+                res.status(500).send({
                     status: "error",
                     message: "Error al crear el usuario.",
                     errorMessage: error.message,
@@ -98,7 +98,7 @@ exports.UserController = {
                 for (let user of users.users) {
                     user = yield utility_1.default.deletePasswordFields(user);
                 }
-                return res.status(200).send({
+                res.status(200).send({
                     status: "success",
                     total_items: users.total,
                     pages: users.pages,
@@ -106,7 +106,7 @@ exports.UserController = {
                 });
             }
             catch (err) {
-                return res.status(nError).send({
+                res.status(nError).send({
                     status: "error",
                     message: "Error al devolver usuarios.",
                     error_message: err.message,
@@ -127,13 +127,13 @@ exports.UserController = {
                     throw new Error("No hay usuario.");
                 }
                 user = yield utility_1.default.deletePasswordFields(user);
-                return res.status(200).send({
+                res.status(200).send({
                     status: "success",
                     user: user,
                 });
             }
             catch (err) {
-                return res.status(nError).send({
+                res.status(nError).send({
                     status: "error",
                     message: "Error al devolver al usuario.",
                     error_message: err.message,
@@ -220,13 +220,13 @@ exports.UserController = {
                     Object.assign({ to: user.email }, mail),
                 ];
                 mail_1.default.DoSendEmail(mails);
-                return res.status(200).send({
+                res.status(200).send({
                     status: "success",
                     user: user,
                 });
             }
             catch (err) {
-                return res.status(nError).send({
+                res.status(nError).send({
                     status: "error",
                     message: "Error al devolver al usuario.",
                     error_message: err.message,
@@ -292,10 +292,10 @@ exports.UserController = {
                 if (!!body.gettoken) {
                     newRes.token = jwt_1.default.createToken(userUpdated);
                 }
-                return res.status(200).send(newRes);
+                res.status(200).send(newRes);
             }
             catch (err) {
-                return res.status(nError).send({
+                res.status(nError).send({
                     status: "error",
                     message: "Error al devolver al usuario.",
                     error_message: err.message,
@@ -306,8 +306,8 @@ exports.UserController = {
     },
     /* 2Export */
     /* DoCreate */
-    DoCreateUser(user, changeUser = null) {
-        return __awaiter(this, void 0, void 0, function* () {
+    DoCreateUser(user_2) {
+        return __awaiter(this, arguments, void 0, function* (user, changeUser = null) {
             try {
                 if (yield exports.UserController.inValidateUser(user)) {
                     throw new Error("Faltan datos");
@@ -459,7 +459,7 @@ exports.UserController = {
                 if (!user.changeHistory)
                     user.changeHistory = [];
                 user.changeHistory.push(userHistory._id);
-                const userUpdated = yield user_1.default.findByIdAndUpdate(user._id.toHexString(), user, { new: true });
+                const userUpdated = yield user_1.default.findByIdAndUpdate(user._id.toString(), user, { new: true });
                 if (!userUpdated) {
                     throw new Error("No se actualizó el usuario.");
                 }

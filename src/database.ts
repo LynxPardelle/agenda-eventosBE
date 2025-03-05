@@ -4,10 +4,6 @@ mongoose.set("strictQuery", false);
 mongoose
   .connect(
     typeof process.env.mongoDBURI === "string" ? process.env.mongoDBURI : "",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    } as ConnectOptions
   )
   .then(() => {
     console.log(

@@ -5,7 +5,6 @@ import _b from "bcrypt";
 import path from "path";
 import { existsSync } from "fs";
 /* Interfaces */
-import { IRequestWithPayload } from "../interfaces/requestWithPayload";
 import { IPayload } from "../interfaces/payload";
 /* Schemas */
 import Evento, { IEvento } from "../schemas/evento";
@@ -80,37 +79,37 @@ const ticketKeys = [
 export const EventoController: any = {
   /* Test */
   datosAutor: (req: Request, res: Response) => {
-    return res.status(200).send({
+    res.status(200).send({
       autor: "Lynx Pardelle",
       url: "https://www.lynxpardelle.com",
     });
   },
   /* Create */
   async createActivity(
-    req: IRequestWithPayload,
+    req: Request,
     res: Response
-  ): Promise<Response> {
+  ): Promise<void> {
     let nError: number = 500;
     try {
-      if (!req.user) {
+      if (!(req as any).user) {
         nError = 403;
         throw new Error("No tienes permiso.");
       }
       const activityStored: IActivity | null =
         await EventoController.DoCreateActivity(
           req.body,
-          req.user,
+          (req as any).user,
           req.params.id
         );
       if (!activityStored) {
         throw new Error("No se creó la actividad.");
       }
-      return res.status(201).send({
+      res.status(201).send({
         status: "success",
         activity: activityStored,
       });
     } catch (error: any) {
-      return res.status(nError).send({
+      res.status(nError).send({
         status: "error",
         message: "Error al crear la actividad.",
         errorMessage: error.message,
@@ -119,16 +118,16 @@ export const EventoController: any = {
     }
   },
   async createCalification(
-    req: IRequestWithPayload,
+    req: Request,
     res: Response
-  ): Promise<Response> {
+  ): Promise<void> {
     let nError: number = 500;
     try {
-      if (!req.user) {
+      if (!(req as any).user) {
         nError = 403;
         throw new Error("No tienes permiso.");
       }
-      let user: IPayload = req.user;
+      let user: IPayload = (req as any).user;
       let obj: any;
       const typeObj: string = req.params.type;
       switch (typeObj) {
@@ -153,7 +152,7 @@ export const EventoController: any = {
           break;
       }
       const calificationStored: ICalification | null =
-        await EventoController.DoCreateCalification(req.body, req.user);
+        await EventoController.DoCreateCalification(req.body, (req as any).user);
       if (!calificationStored) {
         throw new Error("No se creó la calificación.");
       }
@@ -210,13 +209,13 @@ export const EventoController: any = {
         }
       }
       _mail.DoSendEmail(mails);
-      return res.status(201).send({
+      res.status(201).send({
         status: "success",
         calification: calificationStored,
         obj: obj,
       });
     } catch (error: any) {
-      return res.status(nError).send({
+      res.status(nError).send({
         status: "error",
         message: "Error al crear la calificación.",
         errorMessage: error.message,
@@ -225,21 +224,21 @@ export const EventoController: any = {
     }
   },
   async createEvento(
-    req: IRequestWithPayload,
+    req: Request,
     res: Response
-  ): Promise<Response> {
+  ): Promise<void> {
     try {
       const eventoStored: IEvento | null =
-        await EventoController.DoCreateEvento(req.body, req.user);
+        await EventoController.DoCreateEvento(req.body, (req as any).user);
       if (!eventoStored) {
         throw new Error("No se creó el evento.");
       }
-      return res.status(201).send({
+      res.status(201).send({
         status: "success",
         evento: eventoStored,
       });
     } catch (error: any) {
-      return res.status(500).send({
+      res.status(500).send({
         status: "error",
         message: "Error al crear el evento.",
         errorMessage: error.message,
@@ -248,12 +247,12 @@ export const EventoController: any = {
     }
   },
   async createTicket(
-    req: IRequestWithPayload,
+    req: Request,
     res: Response
-  ): Promise<Response> {
+  ): Promise<void> {
     let nError: number = 500;
     try {
-      if (!req.user) {
+      if (!(req as any).user) {
         nError = 403;
         throw new Error("No tienes permiso.");
       }
@@ -270,12 +269,12 @@ export const EventoController: any = {
         throw new Error("No se encontró el evento.");
       }
       const ticketStored: ITicket | null =
-        await EventoController.DoCreateTicket(req.body, req.user);
+        await EventoController.DoCreateTicket(req.body, (req as any).user);
       if (!ticketStored) {
         throw new Error("No se creó el ticket.");
       }
       user.changeDate = new Date();
-      user.changeUser = req.user._id;
+      user.changeUser = (req as any).user._id;
       user.changeType = "update";
       user.uses++;
       user.ver++;
@@ -284,7 +283,7 @@ export const EventoController: any = {
       user = await UserController.DoUpdateUser(user);
       user = await _utility.deletePasswordFields(user);
       evento.changeDate = new Date();
-      evento.changeUser = req.user._id;
+      evento.changeUser = (req as any).user._id;
       evento.changeType = "update";
       evento.uses++;
       evento.ver++;
@@ -311,7 +310,7 @@ export const EventoController: any = {
           ...mail,
         },
         {
-          to: `${req.user.email}`,
+          to: `${(req as any).user.email}`,
           ...mail,
         },
       ];
@@ -319,13 +318,13 @@ export const EventoController: any = {
         mails.push({ to: u.email, ...mail });
       });
       _mail.DoSendEmail(mails);
-      return res.status(201).send({
+      res.status(201).send({
         status: "success",
         ticket: ticketStored,
         user: user,
       });
     } catch (error: any) {
-      return res.status(500).send({
+      res.status(500).send({
         status: "error",
         message: "Error al crear el ticket.",
         errorMessage: error.message,
@@ -334,7 +333,7 @@ export const EventoController: any = {
     }
   },
   /* Read */
-  async getEventos(req: IRequestWithPayload, res: Response) {
+  async getEventos(req: Request, res: Response) {
     let nError = 500;
     try {
       const page = req.params.page ? parseInt(req.params.page) : 1;
@@ -343,7 +342,7 @@ export const EventoController: any = {
       const search = req.params.search ? req.params.search : "";
       const type = req.params.type ? req.params.type : "all";
       let eventos: any = await EventoController.DoGetEventos(
-        await _utility.parseSearcher(type, search, req.user ? req.user : null),
+        await _utility.parseSearcher(type, search, (req as any).user ? (req as any).user : null),
         page,
         limit,
         sort
@@ -355,14 +354,14 @@ export const EventoController: any = {
       for (let evento of eventos.eventos) {
         evento = await _utility.deletePasswordFields(evento);
       }
-      return res.status(200).send({
+      res.status(200).send({
         status: "success",
         total_items: eventos.total,
         pages: eventos.pages,
         eventos: eventos.eventos,
       });
     } catch (err: Error | any) {
-      return res.status(nError).send({
+      res.status(nError).send({
         status: "error",
         message: "Error al devolver eventos.",
         error_message: err.message,
@@ -370,7 +369,7 @@ export const EventoController: any = {
       });
     }
   },
-  async getEvento(req: IRequestWithPayload, res: Response) {
+  async getEvento(req: Request, res: Response) {
     let nError = 500;
     try {
       let evento: IEvento | null = await EventoController.DoGetEventoByAnything(
@@ -386,13 +385,13 @@ export const EventoController: any = {
         evento.changeDate = new Date();
         evento.changeType = "view";
         evento.ver++;
-        if (req.user?._id) {
+        if ((req as any).user?._id) {
           evento.changeUser = await UserController.DoGetUserByAnything({
-            _id: req.user._id,
+            _id: (req as any).user._id,
           })._id;
           let witness = await EventoController.DoCreateWitness(
-            { witness: req.user._id },
-            req.user
+            { witness: (req as any).user._id },
+            (req as any).user
           );
           if (witness) {
             if (!evento.witness) evento.witness = [];
@@ -402,12 +401,12 @@ export const EventoController: any = {
         evento = await EventoController.DoUpdateEvento(evento);
       }
       evento = await _utility.deletePasswordFields(evento);
-      return res.status(200).send({
+      res.status(200).send({
         status: "success",
         evento: evento,
       });
     } catch (err: Error | any) {
-      return res.status(nError).send({
+      res.status(nError).send({
         status: "error",
         message: "Error al devolver al evento.",
         error_message: err.message,
@@ -415,7 +414,7 @@ export const EventoController: any = {
       });
     }
   },
-  async viewActivity(req: IRequestWithPayload, res: Response) {
+  async viewActivity(req: Request, res: Response) {
     let nError = 500;
     try {
       let activity: IActivity | null =
@@ -430,13 +429,13 @@ export const EventoController: any = {
         activity.changeDate = new Date();
         activity.changeType = "view";
         activity.ver++;
-        if (req.user?._id) {
+        if ((req as any).user?._id) {
           activity.changeUser = await UserController.DoGetUserByAnything({
-            _id: req.user._id,
+            _id: (req as any).user._id,
           });
           let witness = await EventoController.DoCreateWitness(
-            { witness: req.user._id },
-            req.user
+            { witness: (req as any).user._id },
+            (req as any).user
           );
           if (witness) {
             if (!activity.witness) activity.witness = [];
@@ -446,12 +445,12 @@ export const EventoController: any = {
         activity = await EventoController.DoUpdateEvento(activity);
       }
       activity = await _utility.deletePasswordFields(activity);
-      return res.status(200).send({
+      res.status(200).send({
         status: "success",
         activity: activity,
       });
     } catch (err: Error | any) {
-      return res.status(nError).send({
+      res.status(nError).send({
         status: "error",
         message: "Error al devolver la actividad.",
         error_message: err.message,
@@ -460,7 +459,7 @@ export const EventoController: any = {
     }
   },
   /* Update & Delete */
-  async updateActivity(req: IRequestWithPayload, res: Response) {
+  async updateActivity(req: Request, res: Response) {
     let nError = 500;
     try {
       const body = req.body;
@@ -484,7 +483,7 @@ export const EventoController: any = {
       }
       activity.changeDate = new Date();
       activity.changeUser = await UserController.DoGetUserByAnything({
-        _id: req.user?._id,
+        _id: (req as any).user?._id,
       });
       activity.changeType = type;
       activity.uses++;
@@ -525,16 +524,16 @@ export const EventoController: any = {
         </p>`,
       };
       const mails = [{ to: adminMail, ...mail }];
-      if (!!req.user) {
-        mails.push({ to: req.user.email, ...mail });
+      if (!!(req as any).user) {
+        mails.push({ to: (req as any).user.email, ...mail });
       }
       _mail.DoSendEmail(mails);
-      return res.status(200).send({
+      res.status(200).send({
         status: "success",
         activity: activity,
       });
     } catch (err: Error | any) {
-      return res.status(nError).send({
+      res.status(nError).send({
         status: "error",
         message: "Error al devolver al actividad.",
         error_message: err.message,
@@ -542,7 +541,7 @@ export const EventoController: any = {
       });
     }
   },
-  async updateCalification(req: IRequestWithPayload, res: Response) {
+  async updateCalification(req: Request, res: Response) {
     let nError = 500;
     try {
       const body = req.body;
@@ -566,7 +565,7 @@ export const EventoController: any = {
       }
       calification.changeDate = new Date();
       calification.changeUser = await UserController.DoGetUserByAnything({
-        _id: req.user?._id,
+        _id: (req as any).user?._id,
       });
       calification.changeType = type;
       calification.uses++;
@@ -607,16 +606,16 @@ export const EventoController: any = {
         </p>`,
       };
       const mails = [{ to: adminMail, ...mail }];
-      if (!!req.user) {
-        mails.push({ to: req.user.email, ...mail });
+      if (!!(req as any).user) {
+        mails.push({ to: (req as any).user.email, ...mail });
       }
       _mail.DoSendEmail(mails);
-      return res.status(200).send({
+      res.status(200).send({
         status: "success",
         calification: calification,
       });
     } catch (err: Error | any) {
-      return res.status(nError).send({
+      res.status(nError).send({
         status: "error",
         message: "Error al devolver al calificación.",
         error_message: err.message,
@@ -624,7 +623,7 @@ export const EventoController: any = {
       });
     }
   },
-  async updateEvento(req: IRequestWithPayload, res: Response) {
+  async updateEvento(req: Request, res: Response) {
     let nError = 500;
     try {
       const body = req.body;
@@ -648,7 +647,7 @@ export const EventoController: any = {
       }
       evento.changeDate = new Date();
       evento.changeUser = await UserController.DoGetUserByAnything({
-        _id: req.user?._id,
+        _id: (req as any).user?._id,
       });
       evento.changeType = type;
       evento.uses++;
@@ -689,16 +688,16 @@ export const EventoController: any = {
         </p>`,
       };
       const mails = [{ to: adminMail, ...mail }];
-      if (!!req.user) {
-        mails.push({ to: req.user.email, ...mail });
+      if (!!(req as any).user) {
+        mails.push({ to: (req as any).user.email, ...mail });
       }
       _mail.DoSendEmail(mails);
-      return res.status(200).send({
+      res.status(200).send({
         status: "success",
         evento: evento,
       });
     } catch (err: Error | any) {
-      return res.status(nError).send({
+      res.status(nError).send({
         status: "error",
         message: "Error al devolver al evento.",
         error_message: err.message,
@@ -706,7 +705,7 @@ export const EventoController: any = {
       });
     }
   },
-  async updateTicket(req: IRequestWithPayload, res: Response) {
+  async updateTicket(req: Request, res: Response) {
     let nError = 500;
     try {
       const body = req.body;
@@ -730,7 +729,7 @@ export const EventoController: any = {
       }
       ticket.changeDate = new Date();
       ticket.changeUser = await UserController.DoGetUserByAnything({
-        _id: req.user?._id,
+        _id: (req as any).user?._id,
       });
       ticket.changeType = type;
       ticket.uses++;
@@ -771,16 +770,16 @@ export const EventoController: any = {
         </p>`,
       };
       const mails = [{ to: adminMail, ...mail }];
-      if (!!req.user) {
-        mails.push({ to: req.user.email, ...mail });
+      if (!!(req as any).user) {
+        mails.push({ to: (req as any).user.email, ...mail });
       }
       _mail.DoSendEmail(mails);
-      return res.status(200).send({
+      res.status(200).send({
         status: "success",
         ticket: ticket,
       });
     } catch (err: Error | any) {
-      return res.status(nError).send({
+      res.status(nError).send({
         status: "error",
         message: "Error al devolver al ticket.",
         error_message: err.message,
@@ -789,14 +788,14 @@ export const EventoController: any = {
     }
   },
   /* Files */
-  async UploadFiles(req: IRequestWithPayload, res: Response) {
+  async UploadFiles(req: Request, res: Response) {
     let nError = 500;
     try {
-      if (!req.user) {
+      if (!(req as any).user) {
         nError = 403;
         throw new Error("No tienes permiso.");
       }
-      let user: IPayload = req.user;
+      let user: IPayload = (req as any).user;
       let obj: any;
       const typeObj = req.params.typeObj;
       switch (typeObj) {
@@ -834,7 +833,7 @@ export const EventoController: any = {
         throw new Error("No se pudieron guardar los archivos correctamente.");
       }
       obj.changeDate = new Date();
-      obj.changeUser = req.user._id;
+      obj.changeUser = (req as any).user._id;
       obj.changeType = "uploadFile";
       obj.uses++;
       obj.ver++;
@@ -890,7 +889,7 @@ export const EventoController: any = {
           ...mail,
         },
         {
-          to: `${req.user.email}`,
+          to: `${(req as any).user.email}`,
           ...mail,
         },
       ];
@@ -901,13 +900,13 @@ export const EventoController: any = {
         }
       }
       _mail.DoSendEmail(mails);
-      return res.status(200).send({
+      res.status(200).send({
         status: "success",
         obj: obj,
         files: files,
       });
     } catch (e: Error | any) {
-      return res.status(nError).send({
+      res.status(nError).send({
         status: "error",
         message: "El archivo tuvo un error al cargarse.",
         error_message: e.message,
@@ -915,14 +914,14 @@ export const EventoController: any = {
       });
     }
   },
-  async deleteFile(req: IRequestWithPayload, res: Response) {
+  async deleteFile(req: Request, res: Response) {
     let nError = 500;
     try {
-      if (!req.user) {
+      if (!(req as any).user) {
         nError = 403;
         throw new Error("No tienes permiso.");
       }
-      let user: IPayload = req.user;
+      let user: IPayload = (req as any).user;
       let obj: any;
       const typeObj = req.params.typeObj;
       switch (typeObj) {
@@ -954,7 +953,7 @@ export const EventoController: any = {
       }
       const exFile: IFile = await _fileManager.deleteFile(req.params.id);
       obj.changeDate = new Date();
-      obj.changeUser = req.user._id;
+      obj.changeUser = (req as any).user._id;
       obj.changeType = "uploadFile";
       obj.uses++;
       obj.ver++;
@@ -1016,7 +1015,7 @@ export const EventoController: any = {
           ...mail,
         },
         {
-          to: `${req.user.email}`,
+          to: `${(req as any).user.email}`,
           ...mail,
         },
       ];
@@ -1027,12 +1026,12 @@ export const EventoController: any = {
         }
       }
       _mail.DoSendEmail(mails);
-      return res.status(200).send({
+      res.status(200).send({
         status: "success",
         obj: obj,
       });
     } catch (e: Error | any) {
-      return res.status(nError).send({
+      res.status(nError).send({
         status: "error",
         message: "El archivo tuvo un error al borrarse.",
         error_message: e.message,
@@ -1053,12 +1052,12 @@ export const EventoController: any = {
         if (!existsSync(filePath)) {
           filePath = path.join(__dirname, "./uploads/evento/", req.params.file);
           if (!existsSync(filePath)) {
-            return res.status(404).send({ error: "File not found" });
+            res.status(404).send({ error: "File not found" });
           }
         }
       }
     }
-    return res.sendFile(filePath);
+    res.sendFile(filePath);
   },
   /* 2Export */
   /* DoCreate */
@@ -1190,7 +1189,7 @@ export const EventoController: any = {
         throw new Error("No se guardó la actividad.");
       }
       evento.changeDate = new Date();
-      evento.changeUser = userAdmin._id;
+      evento.changeUser = userAdmin._id as IUser;
       evento.changeType = "update";
       evento.ver++;
       if (!evento.activities) evento.activities = [];
@@ -1200,9 +1199,9 @@ export const EventoController: any = {
         throw new Error("No se actualizó el evento.");
       }
       if (!adminTicket.activitiesAdmin) adminTicket.activitiesAdmin = [];
-      adminTicket.activitiesAdmin.push(activityStored._id);
+      adminTicket.activitiesAdmin.push(activityStored._id as IActivity);
       adminTicket.changeDate = new Date();
-      adminTicket.changeUser = userAdmin._id;
+      adminTicket.changeUser = userAdmin._id as IUser;
       adminTicket.changeType = "update";
       adminTicket.ver++;
       const adminTicketUpdated = await EventoController.DoUpdateTicket(
@@ -1290,8 +1289,8 @@ export const EventoController: any = {
         ? evento.califications
         : [];
       newEvento.witness = evento.witness ? evento.witness : [];
-      newEvento.asistents = [userAdmin._id];
-      newEvento.operators = [userAdmin._id];
+      newEvento.asistents = [userAdmin._id as IUser];
+      newEvento.operators = [userAdmin._id as IUser];
       newEvento.ticketTypes = evento.ticketTypes;
       newEvento.photos = [];
       newEvento.date = evento.date ? evento.date : new Date();
@@ -1303,7 +1302,7 @@ export const EventoController: any = {
       newEvento.tickets = [];
       newEvento.createAt = new Date();
       newEvento.changeDate = new Date();
-      newEvento.changeUser = userAdmin._id;
+      newEvento.changeUser = userAdmin._id as IUser;
       newEvento.changeType = "create";
       newEvento.ver = 1;
       newEvento.isDeleted = false;
@@ -1328,16 +1327,16 @@ export const EventoController: any = {
         throw new Error("No se guardó el ticket.");
       }
       if (!eventoStored.tickets) eventoStored.tickets = [];
-      eventoStored.tickets.push(newTicket._id);
+      eventoStored.tickets.push(newTicket._id as ITicket);
       const eventoUpdated = await EventoController.DoUpdateEvento(eventoStored);
       if (!eventoUpdated) {
         throw new Error("No se guardó el evento.");
       }
       if (!userAdmin.tickets) userAdmin.tickets = [];
-      userAdmin.tickets.push(newTicket._id);
+      userAdmin.tickets.push(newTicket._id as ITicket);
       userAdmin.verified = true;
       userAdmin.changeDate = new Date();
-      userAdmin.changeUser = userAdmin._id;
+      userAdmin.changeUser = userAdmin._id as IUser;
       userAdmin.changeType = "update";
       userAdmin.uses++;
       userAdmin.ver++;
@@ -1630,9 +1629,9 @@ export const EventoController: any = {
         throw new Error("No se guardó el historial de la actividad.");
       }
       if (!activity.changeHistory) activity.changeHistory = [];
-      activity.changeHistory.push(activityHistory._id);
+      activity.changeHistory.push(activityHistory._id as IActivity);
       const activityUpdate: IActivity | null = await Activity.findByIdAndUpdate(
-        activity._id.toHexString(),
+        (activity._id as IActivity).toString(),
         activity,
         {
           new: true,
@@ -1652,7 +1651,7 @@ export const EventoController: any = {
     try {
       const calificationUpdate: ICalification | null =
         await Calification.findByIdAndUpdate(
-          calification._id.toHexString(),
+          (calification._id as ICalification).toString(),
           calification,
           {
             new: true,
@@ -1675,9 +1674,9 @@ export const EventoController: any = {
         throw new Error("No se guardó el historial del evento.");
       }
       if (!evento.changeHistory) evento.changeHistory = [];
-      evento.changeHistory.push(eventoHistory._id);
+      evento.changeHistory.push(eventoHistory._id as IEvento);
       const eventoUpdate: IEvento | null = await Evento.findByIdAndUpdate(
-        evento._id.toHexString(),
+        (evento._id as IEvento).toString(),
         evento,
         { new: true }
       ).populate(populate.evento);
@@ -1698,9 +1697,9 @@ export const EventoController: any = {
         throw new Error("No se guardó el historial del ticket.");
       }
       if (!ticket.changeHistory) ticket.changeHistory = [];
-      ticket.changeHistory.push(ticketHistory._id);
+      ticket.changeHistory.push(ticketHistory._id as ITicket);
       const ticketUpdate: ITicket | null = await Ticket.findByIdAndUpdate(
-        ticket._id.toHexString(),
+        (ticket._id as ITicket).toString(),
         ticket,
         {
           new: true,
@@ -1717,7 +1716,7 @@ export const EventoController: any = {
   async DoUpdateWitness(witness: IWitness): Promise<IWitness> {
     try {
       const witnessUpdate: IWitness | null = await Witness.findByIdAndUpdate(
-        witness._id.toHexString(),
+        (witness._id as IWitness).toString(),
         witness,
         {
           new: true,

@@ -4,7 +4,6 @@ import path from "path";
 /* Interfaces */
 import { IPayload } from "../interfaces/payload";
 import { IFileParsed } from "../interfaces/fileParsed";
-import { IRequestWithPayload } from "../interfaces/requestWithPayload";
 /* Schemas */
 import File, { IFile } from "../schemas/file";
 /* Controlles */
@@ -91,7 +90,7 @@ const _fileManager = {
     return file;
   },
   async DoGetFilesUploadedAndCreated(
-    req: Request | IRequestWithPayload,
+    req: Request | Request,
     user: IPayload
   ): Promise<IFile[]> {
     //Recoger el fichero de la petición

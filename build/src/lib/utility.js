@@ -51,8 +51,8 @@ exports.default = {
         }
         return result;
     },
-    parseSearcher(type, search, user = null) {
-        return __awaiter(this, void 0, void 0, function* () {
+    parseSearcher(type_1, search_1) {
+        return __awaiter(this, arguments, void 0, function* (type, search, user = null) {
             let searchParams = {};
             if (search !== "") {
                 if (validator_1.default.isJSON(search)) {

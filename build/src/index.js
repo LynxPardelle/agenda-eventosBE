@@ -51,14 +51,14 @@ app.use("/api/evento", evento_1.default);
 /* Test */
 app.get("/datos-autor", (req, res) => {
     console.log("Hello World");
-    return res.status(200).send({
+    res.status(200).send({
         autor: "Lynx Pardelle",
         url: "https://www.lynxpardelle.com",
     });
 });
 /* Static files */
 app.get("*", (req, res) => {
-    res.sendFile(path_1.default.resolve("../../client/index.html"));
+    res.sendFile(path_1.default.resolve("client/index.html"));
 });
 /* Port */
 app.set("port", process.env.PORT || "3669");

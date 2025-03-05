@@ -4,7 +4,6 @@ import _v from "validator";
 import _b from "bcrypt";
 import populate from "../lib/populate";
 /* Interfaces */
-import { IRequestWithPayload } from "../interfaces/requestWithPayload";
 import { IPayload } from "../interfaces/payload";
 /* Schemas */
 import User, { IUser } from "../schemas/user";
@@ -41,26 +40,26 @@ const userKeys = [
 export const UserController: any = {
   /* Test */
   datosAutor: (req: Request, res: Response) => {
-    return res.status(200).send({
+    res.status(200).send({
       autor: "Lynx Pardelle",
       url: "https://www.lynxpardelle.com",
     });
   },
   /* Create */
-  async createUser(req: IRequestWithPayload, res: Response): Promise<Response> {
+  async createUser(req: Request, res: Response): Promise<void> {
     try {
-      const userData = await UserController.DoCreateUser(req.body, req.user);
+      const userData = await UserController.DoCreateUser(req.body, (req as any).user as IPayload | null);
       if (!userData || !userData.user) {
         throw new Error("No se creó el usuario.");
       }
-      return res.status(201).send({
+      res.status(201).send({
         status: "success",
         user: userData.user,
         password: userData.password,
         token: _jwt.createToken(userData.user),
       });
     } catch (error: any) {
-      return res.status(500).send({
+      res.status(500).send({
         status: "error",
         message: "Error al crear el usuario.",
         errorMessage: error.message,
@@ -69,7 +68,7 @@ export const UserController: any = {
     }
   },
   /* Read */
-  async getUsers(req: IRequestWithPayload, res: Response) {
+  async getUsers(req: Request, res: Response) {
     let nError = 500;
     try {
       const page = req.params.page ? parseInt(req.params.page) : 1;
@@ -78,7 +77,7 @@ export const UserController: any = {
       const search = req.params.search ? req.params.search : "";
       const type = req.params.type ? req.params.type : "all";
       let users: any = await UserController.DoGetUsers(
-        await _utility.parseSearcher(type, search, req.user ? req.user : null),
+        await _utility.parseSearcher(type, search, (req as any).user ? (req as any).user as IPayload : null),
         page,
         limit,
         sort
@@ -90,14 +89,14 @@ export const UserController: any = {
       for (let user of users.users) {
         user = await _utility.deletePasswordFields(user);
       }
-      return res.status(200).send({
+      res.status(200).send({
         status: "success",
         total_items: users.total,
         pages: users.pages,
         users: users.users,
       });
     } catch (err: Error | any) {
-      return res.status(nError).send({
+      res.status(nError).send({
         status: "error",
         message: "Error al devolver usuarios.",
         error_message: err.message,
@@ -116,12 +115,12 @@ export const UserController: any = {
         throw new Error("No hay usuario.");
       }
       user = await _utility.deletePasswordFields(user);
-      return res.status(200).send({
+      res.status(200).send({
         status: "success",
         user: user,
       });
     } catch (err: Error | any) {
-      return res.status(nError).send({
+      res.status(nError).send({
         status: "error",
         message: "Error al devolver al usuario.",
         error_message: err.message,
@@ -130,7 +129,7 @@ export const UserController: any = {
     }
   },
   /* Update & Delete */
-  async updateUser(req: IRequestWithPayload, res: Response) {
+  async updateUser(req: Request, res: Response) {
     let nError = 500;
     try {
       const body = req.body;
@@ -152,9 +151,9 @@ export const UserController: any = {
       );
       if (
         !check &&
-        (!req.user ||
+        (!(req as any).user ||
           !["operador", "administrador", "técnico"].includes(
-            req.user.generalRole
+            (req as any).user.generalRole
           ))
       ) {
         nError = 403;
@@ -219,12 +218,12 @@ export const UserController: any = {
         { to: user.email, ...mail },
       ];
       _mail.DoSendEmail(mails);
-      return res.status(200).send({
+      res.status(200).send({
         status: "success",
         user: user,
       });
     } catch (err: Error | any) {
-      return res.status(nError).send({
+      res.status(nError).send({
         status: "error",
         message: "Error al devolver al usuario.",
         error_message: err.message,
@@ -261,7 +260,7 @@ export const UserController: any = {
       }
       user.verified = true;
       user.changeDate = new Date();
-      user.changeUser = user._id;
+      user.changeUser = (user._id as IUser);
       user.changeType = "login";
       user.uses++;
       user.ver++;
@@ -291,9 +290,9 @@ export const UserController: any = {
       if (!!body.gettoken) {
         newRes.token = _jwt.createToken(userUpdated);
       }
-      return res.status(200).send(newRes);
+      res.status(200).send(newRes);
     } catch (err: Error | any) {
-      return res.status(nError).send({
+      res.status(nError).send({
         status: "error",
         message: "Error al devolver al usuario.",
         error_message: err.message,
@@ -397,7 +396,7 @@ export const UserController: any = {
       }
       if (!userHistory.changeHistory) userHistory.changeHistory = [];
       userHistory.changeHistory.push(userHistory._id);
-      const userHistoryStored = await userHistory.save();
+      const userHistoryStored: IUser = await userHistory.save();
       if (!userHistoryStored) {
         throw new Error("No se guardó el historial del usuario.");
       }
@@ -447,9 +446,9 @@ export const UserController: any = {
         throw new Error("No se guardó el historial del usuario.");
       }
       if (!user.changeHistory) user.changeHistory = [];
-      user.changeHistory.push(userHistory._id);
+      user.changeHistory.push(userHistory._id as IUser);
       const userUpdated: IUser | null = await User.findByIdAndUpdate(
-        user._id.toHexString(),
+        (user._id as string).toString(),
         user,
         { new: true }
       );

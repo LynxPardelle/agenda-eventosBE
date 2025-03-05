@@ -7,10 +7,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 mongoose_1.default.Promise = global.Promise;
 mongoose_1.default.set("strictQuery", false);
 mongoose_1.default
-    .connect(typeof process.env.mongoDBURI === "string" ? process.env.mongoDBURI : "", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
+    .connect(typeof process.env.mongoDBURI === "string" ? process.env.mongoDBURI : "")
     .then(() => {
     console.log("La conexión a la base de datos de Agenda Eventos se ha realizado correctamente.");
 })

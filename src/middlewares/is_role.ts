@@ -1,38 +1,40 @@
-import { NextFunction, Response } from "express";
-import { IRequestWithPayload } from "../interfaces/requestWithPayload";
+import { NextFunction, Request, Response } from "express";
 export function isOperador(
-  req: IRequestWithPayload,
+  req: Request,
   res: Response,
   next: NextFunction
-): Response | void {
+): void {
   if (
-    !req.user ||
-    !["operador", "administrador", "técnico"].includes(req.user.generalRole)
+    !(req as any).user ||
+    !["operador", "administrador", "técnico"].includes((req as any).user.generalRole)
   ) {
-    return res.status(403).send({ message: " No tienes acceso a esta zona" });
-  }
+    res.status(403).send({ message: " No tienes acceso a esta zona" });
+  } else {
   next();
+  }
 }
 export function isAdmin(
-  req: IRequestWithPayload,
+  req: Request,
   res: Response,
   next: NextFunction
-): Response | void {
+): void {
   if (
-    !req.user ||
-    !["administrador", "técnico"].includes(req.user.generalRole)
+    !(req as any).user ||
+    !["administrador", "técnico"].includes((req as any).user.generalRole)
   ) {
-    return res.status(403).send({ message: " No tienes acceso a esta zona" });
+    res.status(403).send({ message: " No tienes acceso a esta zona" });
+  } else {
+    next();
   }
-  next();
 }
 export function isTecn(
-  req: IRequestWithPayload,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Response | void {
-  if (req.user?.generalRole !== "técnico") {
-    return res.status(403).send({ message: " No tienes acceso a esta zona" });
+  if ((req as any).user?.generalRole !== "técnico") {
+    res.status(403).send({ message: " No tienes acceso a esta zona" });
+  } else {
+    next();
   }
-  next();
 }

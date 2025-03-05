@@ -23,7 +23,7 @@ const secret = process.env.SECRET ? process.env.SECRET : "";
 exports.MainController = {
     /* Test */
     datosAutor: (req, res) => {
-        return res.status(200).send({
+        res.status(200).send({
             autor: "Lynx Pardelle",
             url: "https://www.lynxpardelle.com",
         });
@@ -92,14 +92,14 @@ exports.MainController = {
                         throw new Error("No hay main.");
                     }
                 }
-                return res.status(200).send({
+                res.status(200).send({
                     status: "success",
                     main: main,
                 });
             }
             catch (e) {
                 console.log(e);
-                return res.status(nErr).send({
+                res.status(nErr).send({
                     status: "error",
                     message: e.message,
                     e: e,
