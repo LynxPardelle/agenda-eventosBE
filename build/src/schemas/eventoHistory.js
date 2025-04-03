@@ -34,7 +34,7 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const mongoosePaginate = require("mongoose-paginate");
+const mongoosePaginate = require("mongoose-paginate-v2");
 exports.default = mongoose_1.default.model("EventoHistory", new mongoose_1.default.Schema({
     logo: { type: mongoose_1.Schema.Types.ObjectId, ref: "File" },
     headerImage: { type: mongoose_1.Schema.Types.ObjectId, ref: "File" },

@@ -1,6 +1,6 @@
 import mongoose, { PaginateModel, Schema } from "mongoose";
 import { IEvento } from "./evento";
-const mongoosePaginate = require("mongoose-paginate");
+const mongoosePaginate = require("mongoose-paginate-v2");
 export default mongoose.model<IEvento, PaginateModel<IEvento>>(
   "EventoHistory",
   new mongoose.Schema({

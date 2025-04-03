@@ -237,6 +237,10 @@ export const UserController: any = {
     try {
       // Recoger el id de la url
       const body = req.body;
+      if(!req.body.email || !req.body.password) {
+        nError = 400;
+        throw new Error("Faltan datos.");
+      }
       // Buscar usuario
       let user: IUser | null = await UserController.DoGetUserByAnything({
         email: body.email.toLowerCase(),
@@ -408,6 +412,10 @@ export const UserController: any = {
   /* DoGet */
   async DoGetUserByAnything(json: any): Promise<any> {
     try {
+      const mongoose = require('mongoose');
+      if (json._id && !mongoose.Types.ObjectId.isValid(json._id)) {
+        throw new Error("El id no es válido.");
+      }
       const user = await User.findOne(json).populate(populate.user);
       return user;
     } catch (err: Error | unknown | any) {

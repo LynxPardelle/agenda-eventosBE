@@ -2,7 +2,7 @@ import mongoose, { PaginateModel, Schema } from "mongoose";
 import { IUser } from "./user";
 import { IFile } from "./file";
 import { IActivity } from "./activity";
-const mongoosePaginate = require("mongoose-paginate");
+const mongoosePaginate = require("mongoose-paginate-v2");
 export default mongoose.model<IActivity, PaginateModel<IActivity>>(
   "ActivityHistory",
   new mongoose.Schema({

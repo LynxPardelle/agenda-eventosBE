@@ -1,6 +1,6 @@
 import mongoose, { PaginateModel, Schema } from "mongoose";
 import { IUser } from "./user";
-const mongoosePaginate = require("mongoose-paginate");
+const mongoosePaginate = require("mongoose-paginate-v2");
 export interface IWitness extends mongoose.Document {
   witness: IUser;
   createAt: Date;

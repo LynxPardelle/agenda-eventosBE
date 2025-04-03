@@ -181,11 +181,10 @@ export const EventoController: any = {
           break;
       }
       obj = await _utility.deletePasswordFields(obj);
-      const message = `Se han calificado a${
-        typeObj === "evento"
-          ? `l evento ${typeObj}`
-          : ` la actividad ${typeObj}`
-      } ${obj.title}.`;
+      const message = `Se han calificado a${typeObj === "evento"
+        ? `l evento ${typeObj}`
+        : ` la actividad ${typeObj}`
+        } ${obj.title}.`;
       const mail = {
         title: message,
         text: message,
@@ -336,24 +335,43 @@ export const EventoController: any = {
   async getEventos(req: Request, res: Response) {
     let nError = 500;
     try {
+      console.log("Parsing request parameters...");
       const page = req.params.page ? parseInt(req.params.page) : 1;
       const limit = req.params.limit ? parseInt(req.params.limit) : 10;
       const sort = req.params.sort ? req.params.sort : "_id";
       const search = req.params.search ? req.params.search : "";
       const type = req.params.type ? req.params.type : "all";
-      let eventos: any = await EventoController.DoGetEventos(
-        await _utility.parseSearcher(type, search, (req as any).user ? (req as any).user : null),
+
+      console.log("Request parameters parsed:", { page, limit, sort, search, type });
+
+      console.log("Building search query...");
+      const searchQuery = await _utility.parseSearcher(
+        type,
+        search,
+        (req as any).user ? (req as any).user : null
+      );
+      console.log("Search query built:", searchQuery);
+
+      console.log("Fetching eventos...");
+      const eventos: any = await EventoController.DoGetEventos(
+        searchQuery,
         page,
         limit,
         sort
       );
+
       if (!eventos || !eventos.eventos) {
         nError = 404;
-        throw new Error("No hay eventos.");
+        console.error("No eventos found.");
+        throw new Error("No se encontraron eventos con los criterios proporcionados.");
       }
-      for (let evento of eventos.eventos) {
-        evento = await _utility.deletePasswordFields(evento);
+
+      console.log("Processing eventos...");
+      for (let i = 0; i < eventos.eventos.length; i++) {
+        eventos.eventos[i] = await _utility.deletePasswordFields(eventos.eventos[i]);
       }
+
+      console.log("Eventos processed successfully.");
       res.status(200).send({
         status: "success",
         total_items: eventos.total,
@@ -361,6 +379,7 @@ export const EventoController: any = {
         eventos: eventos.eventos,
       });
     } catch (err: Error | any) {
+      console.error("Error while fetching eventos:", err.message);
       res.status(nError).send({
         status: "error",
         message: "Error al devolver eventos.",
@@ -501,20 +520,18 @@ export const EventoController: any = {
       activity = await EventoController.DoUpdateActivity(activity);
       activity = await _utility.deletePasswordFields(activity);
       const mail = {
-        title: `Se ${
-          type === "delete"
-            ? "eliminó"
-            : type === "restore"
+        title: `Se ${type === "delete"
+          ? "eliminó"
+          : type === "restore"
             ? "restauro"
             : "actualizó"
-        } la actividad ${activity.name}.`,
-        text: `Se ${
-          type === "delete"
-            ? "eliminó"
-            : type === "restore"
+          } la actividad ${activity.name}.`,
+        text: `Se ${type === "delete"
+          ? "eliminó"
+          : type === "restore"
             ? "restauro"
             : "actualizó"
-        } la actividad ${activity.name}.`,
+          } la actividad ${activity.name}.`,
         html: `
         <p>
           Puedes ver la actividad en este link:
@@ -583,20 +600,18 @@ export const EventoController: any = {
       calification = await EventoController.DoUpdateCalification(calification);
       calification = await _utility.deletePasswordFields(calification);
       const mail = {
-        title: `Se ${
-          type === "delete"
-            ? "eliminó"
-            : type === "restore"
+        title: `Se ${type === "delete"
+          ? "eliminó"
+          : type === "restore"
             ? "restauro"
             : "actualizó"
-        } la calificación ${calification.name}.`,
-        text: `Se ${
-          type === "delete"
-            ? "eliminó"
-            : type === "restore"
+          } la calificación ${calification.name}.`,
+        text: `Se ${type === "delete"
+          ? "eliminó"
+          : type === "restore"
             ? "restauro"
             : "actualizó"
-        } la calificación ${calification.name}.`,
+          } la calificación ${calification.name}.`,
         html: `
         <p>
           Puedes ver la calificación en este link:
@@ -665,20 +680,18 @@ export const EventoController: any = {
       evento = await EventoController.DoUpdateEvento(evento);
       evento = await _utility.deletePasswordFields(evento);
       const mail = {
-        title: `Se ${
-          type === "delete"
-            ? "eliminó"
-            : type === "restore"
+        title: `Se ${type === "delete"
+          ? "eliminó"
+          : type === "restore"
             ? "restauro"
             : "actualizó"
-        } el evento ${evento.title}.`,
-        text: `Se ${
-          type === "delete"
-            ? "eliminó"
-            : type === "restore"
+          } el evento ${evento.title}.`,
+        text: `Se ${type === "delete"
+          ? "eliminó"
+          : type === "restore"
             ? "restauro"
             : "actualizó"
-        } el evento ${evento.title}.`,
+          } el evento ${evento.title}.`,
         html: `
         <p>
           Puedes ver el evento en este link:
@@ -747,20 +760,18 @@ export const EventoController: any = {
       ticket = await EventoController.DoUpdateTicket(ticket);
       ticket = await _utility.deletePasswordFields(ticket);
       const mail = {
-        title: `Se ${
-          type === "delete"
-            ? "eliminó"
-            : type === "restore"
+        title: `Se ${type === "delete"
+          ? "eliminó"
+          : type === "restore"
             ? "restauro"
             : "actualizó"
-        } el ticket ${ticket.name}.`,
-        text: `Se ${
-          type === "delete"
-            ? "eliminó"
-            : type === "restore"
+          } el ticket ${ticket.name}.`,
+        text: `Se ${type === "delete"
+          ? "eliminó"
+          : type === "restore"
             ? "restauro"
             : "actualizó"
-        } el ticket ${ticket.name}.`,
+          } el ticket ${ticket.name}.`,
         html: `
         <p>
           Puedes ver el ticket en este link:
@@ -870,13 +881,11 @@ export const EventoController: any = {
           break;
       }
       obj = await _utility.deletePasswordFields(obj);
-      const message = `Se han subido ${files.length} foto${
-        files.length > 1 ? "s" : ""
-      } a${
-        typeObj === "evento"
+      const message = `Se han subido ${files.length} foto${files.length > 1 ? "s" : ""
+        } a${typeObj === "evento"
           ? `l evento ${typeObj}`
           : ` la actividad ${typeObj}`
-      } ${obj.title}.`;
+        } ${obj.title}.`;
       const mail = {
         title: message,
         text: message,
@@ -992,22 +1001,19 @@ export const EventoController: any = {
           break;
       }
       obj = await _utility.deletePasswordFields(obj);
-      const message = `Se ha eliminado una foto de${
-        typeObj === "evento"
-          ? `l evento ${typeObj}`
-          : ` la actividad ${typeObj}`
-      } ${obj.title}.`;
+      const message = `Se ha eliminado una foto de${typeObj === "evento"
+        ? `l evento ${typeObj}`
+        : ` la actividad ${typeObj}`
+        } ${obj.title}.`;
       const mail = {
         title: message,
         text: message,
         html: `<h1>${message}</h1>
-        <p>Puedes ver ${
-          typeObj === "evento"
+        <p>Puedes ver ${typeObj === "evento"
             ? `el evento ${typeObj}`
             : ` la actividad ${typeObj}`
-        } <a href="${domain}/evento/evento/${typeObj}/${
-          obj._id
-        }">aquí</a>.</p>`,
+          } <a href="${domain}/evento/evento/${typeObj}/${obj._id
+          }">aquí</a>.</p>`,
       };
       const mails = [
         {
@@ -1508,6 +1514,10 @@ export const EventoController: any = {
   },
   async DoGetEventoByAnything(json: any): Promise<IEvento | null> {
     try {
+      const mongoose = require('mongoose');
+      if (json._id && !mongoose.Types.ObjectId.isValid(json._id)) {
+        throw new Error("El id no es válido.");
+      }
       const evento = await Evento.findOne(json).populate(populate.evento);
       return evento;
     } catch (err: Error | unknown | any) {
@@ -1527,12 +1537,14 @@ export const EventoController: any = {
     pages: number;
   }> {
     try {
+      console.log("json", json);
       const eventos: any = await Evento.paginate(json, {
         page: page,
         limit: limit,
         sort: sort,
         populate: populate.evento,
       });
+      console.log("eventos", eventos);
       return {
         eventos: eventos.docs,
         total: eventos.total,

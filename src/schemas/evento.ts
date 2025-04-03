@@ -5,7 +5,7 @@ import { IActivity } from "./activity";
 import { IWitness } from "./witness";
 import { ICalification } from "./calification";
 import { ITicket } from "./ticket";
-const mongoosePaginate = require("mongoose-paginate");
+const mongoosePaginate = require("mongoose-paginate-v2");
 export interface IEvento extends mongoose.Document {
   logo: IFile;
   headerImage: IFile;

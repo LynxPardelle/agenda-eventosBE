@@ -17,13 +17,9 @@ app.use(
   express.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 })
 );
 /* Config Headers & CORS */
-const allowedDomains = [
-  "*",
-  "http://localhost:4200",
-  "http://localhost:3669",
-  "http://agenda-eventos.lynxpardelle.com",
-  "https://agenda-eventos.lynxpardelle.com",
-];
+const allowedDomains = process.env.ALLOWED_DOMAINS
+  ? process.env.ALLOWED_DOMAINS.split(",").map((domain) => domain.trim()): [];
+console.log("Allowed domains:", allowedDomains);
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -40,6 +36,13 @@ app.use(
   })
 );
 /* Routes */
+app.use((req, res, next) => {
+  console.log('Request URL:', req.originalUrl);
+  console.log('Request Method:', req.method);
+  console.log('Request Headers:', req.headers);
+  console.log('Request Body:', req.body);
+  next();
+});
 app.use(
   "/",
   express.static("client", {

@@ -1,6 +1,6 @@
 import mongoose, { PaginateModel, Schema } from "mongoose";
 import { ITicket } from "./ticket";
-const mongoosePaginate = require("mongoose-paginate");
+const mongoosePaginate = require("mongoose-paginate-v2");
 export interface IUser extends mongoose.Document {
   name: string;
   roleType: "basic" | "premium" | "special";

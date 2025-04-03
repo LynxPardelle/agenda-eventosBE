@@ -1,6 +1,6 @@
 import mongoose, { PaginateModel, Schema } from "mongoose";
 import { ITicket } from "./ticket";
-const mongoosePaginate = require("mongoose-paginate");
+const mongoosePaginate = require("mongoose-paginate-v2");
 export default mongoose.model<ITicket, PaginateModel<ITicket>>(
   "TicketHistory",
   new mongoose.Schema({

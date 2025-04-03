@@ -11,6 +11,7 @@ import { SharedModule } from './shared/shared.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './core/components/home/home.component';
 import { ErrorComponent } from './core/components/error/error.component';
+import { AboutComponent } from './core/components/about/about.component';
 
 /* Interceptors */
 import { TokenInterceptor } from './core/interceptors/token.interceptor';
@@ -30,7 +31,6 @@ import { environment } from '../environments/environment';
 /* Language */
 import localEs from '@angular/common/locales/es-MX';
 import { registerLocaleData } from '@angular/common';
-import { AboutComponent } from './core/components/about/about.component';
 registerLocaleData(localEs);
 
 const APLICATION: string = environment.app;

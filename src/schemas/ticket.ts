@@ -2,7 +2,7 @@ import mongoose, { PaginateModel, Schema } from "mongoose";
 import { IUser } from "./user";
 import { IEvento } from "./evento";
 import { IActivity } from "./activity";
-const mongoosePaginate = require("mongoose-paginate");
+const mongoosePaginate = require("mongoose-paginate-v2");
 export interface ITicket extends mongoose.Document {
   type: number;
   evento: IEvento;

@@ -1,6 +1,6 @@
 import mongoose, { PaginateModel, Schema } from "mongoose";
 import { IMain } from "./main";
-const mongoosePaginate = require("mongoose-paginate");
+const mongoosePaginate = require("mongoose-paginate-v2");
 export default mongoose.model<IMain, PaginateModel<IMain>>(
   "MainHistory",
   new mongoose.Schema({

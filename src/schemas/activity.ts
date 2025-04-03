@@ -3,7 +3,7 @@ import { IUser } from "./user";
 import { IFile } from "./file";
 import { IWitness } from "./witness";
 import { ICalification } from "./calification";
-const mongoosePaginate = require("mongoose-paginate");
+const mongoosePaginate = require("mongoose-paginate-v2");
 export interface IActivity extends mongoose.Document {
   ticketType: number;
   title: string;
